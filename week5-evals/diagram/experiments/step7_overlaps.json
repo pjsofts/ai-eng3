@@ -1,0 +1,1782 @@
+{
+ "name": "step7_overlaps",
+ "scores": {
+  "bound_arrows": 1.0,
+  "bound_labels": 1.0,
+  "connectivity": 1.0,
+  "label_keywords": 1.0,
+  "no_overlaps": 1.0,
+  "schema": 1.0,
+  "structure": 1.0,
+  "tool_choice": 1.0
+ },
+ "rows": [
+  {
+   "id": "create-box",
+   "category": "create",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "tool_choice": 1.0,
+    "label_keywords": 1.0,
+    "bound_labels": 1.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: one rectangle labeled Hello.",
+    "elements": [
+     {
+      "id": "rect_hello",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_hello_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_hello_label",
+      "type": "text",
+      "text": "Hello",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_hello"
+     }
+    ],
+    "tool_calls": [
+     "add_elements"
+    ]
+   }
+  },
+  {
+   "id": "create-flow",
+   "category": "create",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "tool_choice": 1.0,
+    "label_keywords": 1.0,
+    "bound_arrows": 1.0,
+    "connectivity": 1.0,
+    "bound_labels": 1.0,
+    "no_overlaps": 1.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: Start \u2192 Process \u2192 End, connected by arrows.",
+    "elements": [
+     {
+      "id": "rect_start",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_start_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_start_label",
+      "type": "text",
+      "text": "Start",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_start"
+     },
+     {
+      "id": "rect_process",
+      "type": "rectangle",
+      "x": 420,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_process_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_process_label",
+      "type": "text",
+      "text": "Process",
+      "x": 420,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_process"
+     },
+     {
+      "id": "rect_end",
+      "type": "rectangle",
+      "x": 740,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_end_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_end_label",
+      "type": "text",
+      "text": "End",
+      "x": 740,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_end"
+     },
+     {
+      "id": "arrow_start_process",
+      "type": "arrow",
+      "x": 340,
+      "y": 150.0,
+      "width": 80,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_start"
+      },
+      "endBinding": {
+       "elementId": "rect_process"
+      }
+     },
+     {
+      "id": "arrow_process_end",
+      "type": "arrow",
+      "x": 660,
+      "y": 150.0,
+      "width": 80,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_process"
+      },
+      "endBinding": {
+       "elementId": "rect_end"
+      }
+     }
+    ],
+    "tool_calls": [
+     "add_elements"
+    ]
+   }
+  },
+  {
+   "id": "create-decision",
+   "category": "create",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "tool_choice": 1.0,
+    "label_keywords": 1.0,
+    "bound_arrows": 1.0,
+    "connectivity": 1.0,
+    "bound_labels": 1.0,
+    "no_overlaps": 1.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: Login, then the decision, with yes to Dashboard and no to Error.",
+    "elements": [
+     {
+      "id": "rect_login",
+      "type": "rectangle",
+      "x": 260,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_login_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_login_label",
+      "type": "text",
+      "text": "Login",
+      "x": 260,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_login"
+     },
+     {
+      "id": "diamond_password",
+      "type": "diamond",
+      "x": 310,
+      "y": 280,
+      "width": 140,
+      "height": 140,
+      "boundElements": [
+       {
+        "id": "diamond_password_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "diamond_password_label",
+      "type": "text",
+      "text": "Password correct?",
+      "x": 310,
+      "y": 280,
+      "width": 140,
+      "height": 140,
+      "containerId": "diamond_password"
+     },
+     {
+      "id": "rect_dashboard",
+      "type": "rectangle",
+      "x": 100,
+      "y": 500,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_dashboard_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_dashboard_label",
+      "type": "text",
+      "text": "Dashboard",
+      "x": 100,
+      "y": 500,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_dashboard"
+     },
+     {
+      "id": "rect_error",
+      "type": "rectangle",
+      "x": 420,
+      "y": 500,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_error_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_error_label",
+      "type": "text",
+      "text": "Error",
+      "x": 420,
+      "y": 500,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_error"
+     },
+     {
+      "id": "arrow_login_check",
+      "type": "arrow",
+      "x": 380.0,
+      "y": 200,
+      "width": 0.0,
+      "height": 80,
+      "startBinding": {
+       "elementId": "rect_login"
+      },
+      "endBinding": {
+       "elementId": "diamond_password"
+      }
+     },
+     {
+      "id": "arrow_yes",
+      "type": "arrow",
+      "x": 380.0,
+      "y": 420,
+      "width": -160.0,
+      "height": 80,
+      "startBinding": {
+       "elementId": "diamond_password"
+      },
+      "endBinding": {
+       "elementId": "rect_dashboard"
+      },
+      "boundElements": [
+       {
+        "id": "arrow_yes_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "arrow_yes_label",
+      "type": "text",
+      "text": "yes",
+      "x": 380.0,
+      "y": 420,
+      "width": -160.0,
+      "height": 80,
+      "containerId": "arrow_yes"
+     },
+     {
+      "id": "arrow_no",
+      "type": "arrow",
+      "x": 380.0,
+      "y": 420,
+      "width": 160.0,
+      "height": 80,
+      "startBinding": {
+       "elementId": "diamond_password"
+      },
+      "endBinding": {
+       "elementId": "rect_error"
+      },
+      "boundElements": [
+       {
+        "id": "arrow_no_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "arrow_no_label",
+      "type": "text",
+      "text": "no",
+      "x": 380.0,
+      "y": 420,
+      "width": 160.0,
+      "height": 80,
+      "containerId": "arrow_no"
+     }
+    ],
+    "tool_calls": [
+     "add_elements"
+    ]
+   }
+  },
+  {
+   "id": "create-org",
+   "category": "create",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "tool_choice": 1.0,
+    "label_keywords": 1.0,
+    "bound_arrows": 1.0,
+    "connectivity": 1.0,
+    "bound_labels": 1.0,
+    "no_overlaps": 1.0
+   },
+   "seconds": 0.7,
+   "output": {
+    "text": "Done: the CEO, three VPs, and their directors, top to bottom.",
+    "elements": [
+     {
+      "id": "rect_ceo",
+      "type": "rectangle",
+      "x": 900,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_ceo_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_ceo_label",
+      "type": "text",
+      "text": "CEO",
+      "x": 900,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_ceo"
+     },
+     {
+      "id": "rect_engineering",
+      "type": "rectangle",
+      "x": 260,
+      "y": 280,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_engineering_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_engineering_label",
+      "type": "text",
+      "text": "VP Engineering",
+      "x": 260,
+      "y": 280,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_engineering"
+     },
+     {
+      "id": "rect_platform_director",
+      "type": "rectangle",
+      "x": 100,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_platform_director_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_platform_director_label",
+      "type": "text",
+      "text": "Platform Director",
+      "x": 100,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_platform_director"
+     },
+     {
+      "id": "rect_product_director",
+      "type": "rectangle",
+      "x": 420,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_product_director_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_product_director_label",
+      "type": "text",
+      "text": "Product Director",
+      "x": 420,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_product_director"
+     },
+     {
+      "id": "rect_sales",
+      "type": "rectangle",
+      "x": 900,
+      "y": 280,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_sales_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_sales_label",
+      "type": "text",
+      "text": "VP Sales",
+      "x": 900,
+      "y": 280,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_sales"
+     },
+     {
+      "id": "rect_emea_director",
+      "type": "rectangle",
+      "x": 740,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_emea_director_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_emea_director_label",
+      "type": "text",
+      "text": "EMEA Director",
+      "x": 740,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_emea_director"
+     },
+     {
+      "id": "rect_us_director",
+      "type": "rectangle",
+      "x": 1060,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_us_director_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_us_director_label",
+      "type": "text",
+      "text": "US Director",
+      "x": 1060,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_us_director"
+     },
+     {
+      "id": "rect_marketing",
+      "type": "rectangle",
+      "x": 1540,
+      "y": 280,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_marketing_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_marketing_label",
+      "type": "text",
+      "text": "VP Marketing",
+      "x": 1540,
+      "y": 280,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_marketing"
+     },
+     {
+      "id": "rect_brand_director",
+      "type": "rectangle",
+      "x": 1380,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_brand_director_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_brand_director_label",
+      "type": "text",
+      "text": "Brand Director",
+      "x": 1380,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_brand_director"
+     },
+     {
+      "id": "rect_growth_director",
+      "type": "rectangle",
+      "x": 1700,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_growth_director_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_growth_director_label",
+      "type": "text",
+      "text": "Growth Director",
+      "x": 1700,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_growth_director"
+     },
+     {
+      "id": "arrow_ceo_engineering",
+      "type": "arrow",
+      "x": 900,
+      "y": 150.0,
+      "width": -400,
+      "height": 180.0,
+      "startBinding": {
+       "elementId": "rect_ceo"
+      },
+      "endBinding": {
+       "elementId": "rect_engineering"
+      }
+     },
+     {
+      "id": "arrow_engineering_platform_director",
+      "type": "arrow",
+      "x": 380.0,
+      "y": 380,
+      "width": -160.0,
+      "height": 80,
+      "startBinding": {
+       "elementId": "rect_engineering"
+      },
+      "endBinding": {
+       "elementId": "rect_platform_director"
+      }
+     },
+     {
+      "id": "arrow_engineering_product_director",
+      "type": "arrow",
+      "x": 380.0,
+      "y": 380,
+      "width": 160.0,
+      "height": 80,
+      "startBinding": {
+       "elementId": "rect_engineering"
+      },
+      "endBinding": {
+       "elementId": "rect_product_director"
+      }
+     },
+     {
+      "id": "arrow_ceo_sales",
+      "type": "arrow",
+      "x": 1020.0,
+      "y": 200,
+      "width": 0.0,
+      "height": 80,
+      "startBinding": {
+       "elementId": "rect_ceo"
+      },
+      "endBinding": {
+       "elementId": "rect_sales"
+      }
+     },
+     {
+      "id": "arrow_sales_emea_director",
+      "type": "arrow",
+      "x": 1020.0,
+      "y": 380,
+      "width": -160.0,
+      "height": 80,
+      "startBinding": {
+       "elementId": "rect_sales"
+      },
+      "endBinding": {
+       "elementId": "rect_emea_director"
+      }
+     },
+     {
+      "id": "arrow_sales_us_director",
+      "type": "arrow",
+      "x": 1020.0,
+      "y": 380,
+      "width": 160.0,
+      "height": 80,
+      "startBinding": {
+       "elementId": "rect_sales"
+      },
+      "endBinding": {
+       "elementId": "rect_us_director"
+      }
+     },
+     {
+      "id": "arrow_ceo_marketing",
+      "type": "arrow",
+      "x": 1140,
+      "y": 150.0,
+      "width": 400,
+      "height": 180.0,
+      "startBinding": {
+       "elementId": "rect_ceo"
+      },
+      "endBinding": {
+       "elementId": "rect_marketing"
+      }
+     },
+     {
+      "id": "arrow_marketing_brand_director",
+      "type": "arrow",
+      "x": 1660.0,
+      "y": 380,
+      "width": -160.0,
+      "height": 80,
+      "startBinding": {
+       "elementId": "rect_marketing"
+      },
+      "endBinding": {
+       "elementId": "rect_brand_director"
+      }
+     },
+     {
+      "id": "arrow_marketing_growth_director",
+      "type": "arrow",
+      "x": 1660.0,
+      "y": 380,
+      "width": 160.0,
+      "height": 80,
+      "startBinding": {
+       "elementId": "rect_marketing"
+      },
+      "endBinding": {
+       "elementId": "rect_growth_director"
+      }
+     }
+    ],
+    "tool_calls": [
+     "add_elements"
+    ]
+   }
+  },
+  {
+   "id": "create-long-labels",
+   "category": "create",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "tool_choice": 1.0,
+    "label_keywords": 1.0,
+    "bound_arrows": 1.0,
+    "bound_labels": 1.0,
+    "no_overlaps": 1.0
+   },
+   "seconds": 0.9,
+   "output": {
+    "text": "Done: four services, left to right. The first layout overlapped, so I moved three boxes apart.",
+    "elements": [
+     {
+      "id": "rect_web_browser",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_web_browser_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_web_browser_label",
+      "type": "text",
+      "text": "Web Browser",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_web_browser"
+     },
+     {
+      "id": "rect_api_resource_server",
+      "type": "rectangle",
+      "x": 420,
+      "y": 100,
+      "width": 294,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_api_resource_server_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_api_resource_server_label",
+      "type": "text",
+      "text": "API / Resource Server",
+      "x": 380,
+      "y": 100,
+      "width": 294,
+      "height": 100,
+      "containerId": "rect_api_resource_server"
+     },
+     {
+      "id": "rect_authentication_service",
+      "type": "rectangle",
+      "x": 794,
+      "y": 100,
+      "width": 308,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_authentication_service_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_authentication_service_label",
+      "type": "text",
+      "text": "Authentication Service",
+      "x": 660,
+      "y": 100,
+      "width": 308,
+      "height": 100,
+      "containerId": "rect_authentication_service"
+     },
+     {
+      "id": "rect_primary_database",
+      "type": "rectangle",
+      "x": 1182,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_primary_database_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_primary_database_label",
+      "type": "text",
+      "text": "Primary Database",
+      "x": 940,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_primary_database"
+     },
+     {
+      "id": "arrow_web_browser_api_resource_server",
+      "type": "arrow",
+      "x": 340,
+      "y": 150.0,
+      "width": 40,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_web_browser"
+      },
+      "endBinding": {
+       "elementId": "rect_api_resource_server"
+      }
+     },
+     {
+      "id": "arrow_api_resource_server_authentication_service",
+      "type": "arrow",
+      "x": 674,
+      "y": 150.0,
+      "width": -14,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_api_resource_server"
+      },
+      "endBinding": {
+       "elementId": "rect_authentication_service"
+      }
+     },
+     {
+      "id": "arrow_authentication_service_primary_database",
+      "type": "arrow",
+      "x": 968,
+      "y": 150.0,
+      "width": -28,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_authentication_service"
+      },
+      "endBinding": {
+       "elementId": "rect_primary_database"
+      }
+     }
+    ],
+    "tool_calls": [
+     "add_elements",
+     "update_elements"
+    ]
+   }
+  },
+  {
+   "id": "create-tight-grid",
+   "category": "create",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "tool_choice": 1.0,
+    "bound_labels": 1.0,
+    "no_overlaps": 1.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: a 3 by 3 grid, A to I, edge to edge.",
+    "elements": [
+     {
+      "id": "rect_a",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 120,
+      "height": 80,
+      "boundElements": [
+       {
+        "id": "rect_a_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_a_label",
+      "type": "text",
+      "text": "A",
+      "x": 100,
+      "y": 100,
+      "width": 120,
+      "height": 80,
+      "containerId": "rect_a"
+     },
+     {
+      "id": "rect_b",
+      "type": "rectangle",
+      "x": 220,
+      "y": 100,
+      "width": 120,
+      "height": 80,
+      "boundElements": [
+       {
+        "id": "rect_b_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_b_label",
+      "type": "text",
+      "text": "B",
+      "x": 220,
+      "y": 100,
+      "width": 120,
+      "height": 80,
+      "containerId": "rect_b"
+     },
+     {
+      "id": "rect_c",
+      "type": "rectangle",
+      "x": 340,
+      "y": 100,
+      "width": 120,
+      "height": 80,
+      "boundElements": [
+       {
+        "id": "rect_c_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_c_label",
+      "type": "text",
+      "text": "C",
+      "x": 340,
+      "y": 100,
+      "width": 120,
+      "height": 80,
+      "containerId": "rect_c"
+     },
+     {
+      "id": "rect_d",
+      "type": "rectangle",
+      "x": 100,
+      "y": 180,
+      "width": 120,
+      "height": 80,
+      "boundElements": [
+       {
+        "id": "rect_d_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_d_label",
+      "type": "text",
+      "text": "D",
+      "x": 100,
+      "y": 180,
+      "width": 120,
+      "height": 80,
+      "containerId": "rect_d"
+     },
+     {
+      "id": "rect_e",
+      "type": "rectangle",
+      "x": 220,
+      "y": 180,
+      "width": 120,
+      "height": 80,
+      "boundElements": [
+       {
+        "id": "rect_e_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_e_label",
+      "type": "text",
+      "text": "E",
+      "x": 220,
+      "y": 180,
+      "width": 120,
+      "height": 80,
+      "containerId": "rect_e"
+     },
+     {
+      "id": "rect_f",
+      "type": "rectangle",
+      "x": 340,
+      "y": 180,
+      "width": 120,
+      "height": 80,
+      "boundElements": [
+       {
+        "id": "rect_f_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_f_label",
+      "type": "text",
+      "text": "F",
+      "x": 340,
+      "y": 180,
+      "width": 120,
+      "height": 80,
+      "containerId": "rect_f"
+     },
+     {
+      "id": "rect_g",
+      "type": "rectangle",
+      "x": 100,
+      "y": 260,
+      "width": 120,
+      "height": 80,
+      "boundElements": [
+       {
+        "id": "rect_g_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_g_label",
+      "type": "text",
+      "text": "G",
+      "x": 100,
+      "y": 260,
+      "width": 120,
+      "height": 80,
+      "containerId": "rect_g"
+     },
+     {
+      "id": "rect_h",
+      "type": "rectangle",
+      "x": 220,
+      "y": 260,
+      "width": 120,
+      "height": 80,
+      "boundElements": [
+       {
+        "id": "rect_h_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_h_label",
+      "type": "text",
+      "text": "H",
+      "x": 220,
+      "y": 260,
+      "width": 120,
+      "height": 80,
+      "containerId": "rect_h"
+     },
+     {
+      "id": "rect_i",
+      "type": "rectangle",
+      "x": 340,
+      "y": 260,
+      "width": 120,
+      "height": 80,
+      "boundElements": [
+       {
+        "id": "rect_i_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_i_label",
+      "type": "text",
+      "text": "I",
+      "x": 340,
+      "y": 260,
+      "width": 120,
+      "height": 80,
+      "containerId": "rect_i"
+     }
+    ],
+    "tool_calls": [
+     "add_elements"
+    ]
+   }
+  },
+  {
+   "id": "modify-color",
+   "category": "modify",
+   "scores": {
+    "schema": 1.0,
+    "tool_choice": 1.0,
+    "bound_labels": 1.0,
+    "no_overlaps": 1.0
+   },
+   "seconds": 0.9,
+   "output": {
+    "text": "Done: the login box is red. Nothing else changed.",
+    "elements": [
+     {
+      "id": "rect_login",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_login_label",
+        "type": "text"
+       }
+      ],
+      "backgroundColor": "#fa5252"
+     },
+     {
+      "id": "rect_login_label",
+      "type": "text",
+      "text": "login",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_login"
+     },
+     {
+      "id": "rect_db",
+      "type": "rectangle",
+      "x": 420,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_db_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_db_label",
+      "type": "text",
+      "text": "database",
+      "x": 420,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_db"
+     }
+    ],
+    "tool_calls": [
+     "query_canvas",
+     "update_elements"
+    ]
+   }
+  },
+  {
+   "id": "modify-add",
+   "category": "modify",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "tool_choice": 1.0,
+    "label_keywords": 1.0,
+    "bound_arrows": 1.0,
+    "connectivity": 1.0,
+    "bound_labels": 1.0,
+    "no_overlaps": 1.0
+   },
+   "seconds": 1.2,
+   "output": {
+    "text": "Done: I moved the Database right and put the Cache between it and the API.",
+    "elements": [
+     {
+      "id": "rect_user",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_user_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_user_label",
+      "type": "text",
+      "text": "User",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_user"
+     },
+     {
+      "id": "rect_api",
+      "type": "rectangle",
+      "x": 420,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_api_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_api_label",
+      "type": "text",
+      "text": "API",
+      "x": 420,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_api"
+     },
+     {
+      "id": "rect_db",
+      "type": "rectangle",
+      "x": 1060,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_db_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_db_label",
+      "type": "text",
+      "text": "Database",
+      "x": 740,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_db"
+     },
+     {
+      "id": "arrow_user_api",
+      "type": "arrow",
+      "x": 340,
+      "y": 150,
+      "width": 80,
+      "height": 0,
+      "startBinding": {
+       "elementId": "rect_user"
+      },
+      "endBinding": {
+       "elementId": "rect_api"
+      }
+     },
+     {
+      "id": "rect_cache",
+      "type": "rectangle",
+      "x": 740,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_cache_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_cache_label",
+      "type": "text",
+      "text": "Cache",
+      "x": 740,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_cache"
+     },
+     {
+      "id": "arrow_api_cache",
+      "type": "arrow",
+      "x": 660,
+      "y": 150.0,
+      "width": 80,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_api"
+      },
+      "endBinding": {
+       "elementId": "rect_cache"
+      }
+     },
+     {
+      "id": "arrow_cache_db",
+      "type": "arrow",
+      "x": 980,
+      "y": 150.0,
+      "width": 80,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_cache"
+      },
+      "endBinding": {
+       "elementId": "rect_db"
+      }
+     }
+    ],
+    "tool_calls": [
+     "query_canvas",
+     "update_elements",
+     "remove_elements",
+     "add_elements"
+    ]
+   }
+  },
+  {
+   "id": "domain-oauth",
+   "category": "domain",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "tool_choice": 1.0,
+    "label_keywords": 1.0,
+    "bound_arrows": 1.0,
+    "connectivity": 1.0,
+    "bound_labels": 1.0,
+    "no_overlaps": 1.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: the OAuth 2.0 authorization code flow, one numbered arrow per message.",
+    "elements": [
+     {
+      "id": "rect_user",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_user_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_user_label",
+      "type": "text",
+      "text": "User",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_user"
+     },
+     {
+      "id": "rect_client",
+      "type": "rectangle",
+      "x": 100,
+      "y": 400,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_client_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_client_label",
+      "type": "text",
+      "text": "Client app",
+      "x": 100,
+      "y": 400,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_client"
+     },
+     {
+      "id": "rect_auth",
+      "type": "rectangle",
+      "x": 740,
+      "y": 400,
+      "width": 280,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_auth_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_auth_label",
+      "type": "text",
+      "text": "Authorization Server",
+      "x": 740,
+      "y": 400,
+      "width": 280,
+      "height": 100,
+      "containerId": "rect_auth"
+     },
+     {
+      "id": "rect_resource",
+      "type": "rectangle",
+      "x": 740,
+      "y": 700,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_resource_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_resource_label",
+      "type": "text",
+      "text": "Resource Server",
+      "x": 740,
+      "y": 700,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_resource"
+     },
+     {
+      "id": "arrow_1",
+      "type": "arrow",
+      "x": 220.0,
+      "y": 200,
+      "width": 0.0,
+      "height": 200,
+      "startBinding": {
+       "elementId": "rect_user"
+      },
+      "endBinding": {
+       "elementId": "rect_client"
+      },
+      "boundElements": [
+       {
+        "id": "arrow_1_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "arrow_1_label",
+      "type": "text",
+      "text": "1. sign in",
+      "x": 220.0,
+      "y": 200,
+      "width": 0.0,
+      "height": 200,
+      "containerId": "arrow_1"
+     },
+     {
+      "id": "arrow_2",
+      "type": "arrow",
+      "x": 340,
+      "y": 450.0,
+      "width": 400,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_client"
+      },
+      "endBinding": {
+       "elementId": "rect_auth"
+      },
+      "boundElements": [
+       {
+        "id": "arrow_2_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "arrow_2_label",
+      "type": "text",
+      "text": "2. redirect to /authorize",
+      "x": 340,
+      "y": 450.0,
+      "width": 400,
+      "height": 0.0,
+      "containerId": "arrow_2"
+     },
+     {
+      "id": "arrow_3",
+      "type": "arrow",
+      "x": 740,
+      "y": 450.0,
+      "width": -400,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_auth"
+      },
+      "endBinding": {
+       "elementId": "rect_client"
+      },
+      "boundElements": [
+       {
+        "id": "arrow_3_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "arrow_3_label",
+      "type": "text",
+      "text": "3. authorization code",
+      "x": 740,
+      "y": 450.0,
+      "width": -400,
+      "height": 0.0,
+      "containerId": "arrow_3"
+     },
+     {
+      "id": "arrow_4",
+      "type": "arrow",
+      "x": 340,
+      "y": 450.0,
+      "width": 400,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_client"
+      },
+      "endBinding": {
+       "elementId": "rect_auth"
+      },
+      "boundElements": [
+       {
+        "id": "arrow_4_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "arrow_4_label",
+      "type": "text",
+      "text": "4. code for an access token",
+      "x": 340,
+      "y": 450.0,
+      "width": 400,
+      "height": 0.0,
+      "containerId": "arrow_4"
+     },
+     {
+      "id": "arrow_5",
+      "type": "arrow",
+      "x": 340,
+      "y": 450.0,
+      "width": 400,
+      "height": 300.0,
+      "startBinding": {
+       "elementId": "rect_client"
+      },
+      "endBinding": {
+       "elementId": "rect_resource"
+      },
+      "boundElements": [
+       {
+        "id": "arrow_5_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "arrow_5_label",
+      "type": "text",
+      "text": "5. API call with the access token",
+      "x": 340,
+      "y": 450.0,
+      "width": 400,
+      "height": 300.0,
+      "containerId": "arrow_5"
+     }
+    ],
+    "tool_calls": [
+     "add_elements"
+    ]
+   }
+  },
+  {
+   "id": "edge-vague",
+   "category": "edge",
+   "scores": {
+    "schema": 1.0,
+    "bound_arrows": 1.0,
+    "bound_labels": 1.0,
+    "no_overlaps": 1.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "I drew a small flow: Idea \u2192 Plan \u2192 Ship.",
+    "elements": [
+     {
+      "id": "rect_idea",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_idea_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_idea_label",
+      "type": "text",
+      "text": "Idea",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_idea"
+     },
+     {
+      "id": "rect_plan",
+      "type": "rectangle",
+      "x": 420,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_plan_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_plan_label",
+      "type": "text",
+      "text": "Plan",
+      "x": 420,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_plan"
+     },
+     {
+      "id": "rect_ship",
+      "type": "rectangle",
+      "x": 740,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "boundElements": [
+       {
+        "id": "rect_ship_label",
+        "type": "text"
+       }
+      ]
+     },
+     {
+      "id": "rect_ship_label",
+      "type": "text",
+      "text": "Ship",
+      "x": 740,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "containerId": "rect_ship"
+     },
+     {
+      "id": "arrow_idea_plan",
+      "type": "arrow",
+      "x": 340,
+      "y": 150.0,
+      "width": 80,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_idea"
+      },
+      "endBinding": {
+       "elementId": "rect_plan"
+      }
+     },
+     {
+      "id": "arrow_plan_ship",
+      "type": "arrow",
+      "x": 660,
+      "y": 150.0,
+      "width": 80,
+      "height": 0.0,
+      "startBinding": {
+       "elementId": "rect_plan"
+      },
+      "endBinding": {
+       "elementId": "rect_ship"
+      }
+     }
+    ],
+    "tool_calls": [
+     "add_elements"
+    ]
+   }
+  }
+ ]
+}

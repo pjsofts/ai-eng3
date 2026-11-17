@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 5 · Evals &amp; the Diagram Agent — Slides</title>
+<link rel="icon" href="logo-mark.png">
+<style>
+@font-face { font-family: "Space Grotesk"; font-weight: 400 700; font-display: swap; src: url("fonts/space-grotesk.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 100 900; font-display: swap; src: url("fonts/inter.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 100 800; font-display: swap; src: url("fonts/jetbrains-mono.woff2") format("woff2"); }
+
+/* The same brand as the course site: the studio. Brick white, denim navy, chair red, sticky-note yellow. */
+:root {
+  --paper: #f5f6f3; --paper-2: #e6e9e8; --card: #ffffff;
+  --ink: #1d2a44; --ink-soft: #4b5568;
+  --violet: #d42f26; --violet-deep: #a8231c; --violet-wash: #fbe6e4;
+  --gold: #f6d64a; --gold-deep: #8a5a26; --gold-wash: #fdf3c4;
+  --teal: #0f8f80; --teal-wash: #ddf3ef;
+  --rose: #c2416b;
+  --term-green: #7ddca4;
+  --rule: rgba(29, 42, 68, 0.12);
+  --display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { overflow: hidden; background: #0b0918; font-family: var(--sans); color: var(--ink); }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: -0.03em; line-height: 1.02; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+code, .mono { font-family: var(--mono); }
+
+.viewport { position: fixed; inset: 0 0 52px 0; display: grid; place-items: center; }
+.stage { width: 1280px; height: 720px; position: relative; transform: scale(var(--s, 1)); flex: none; }
+
+/* ---------------- a slide ---------------- */
+.slide { position: absolute; inset: 0; display: none; flex-direction: column; padding: 60px 84px 80px; background: var(--paper); overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0,0,0,.8); }
+.slide.on { display: flex; }
+.slide.ink { background: var(--ink); color: #d9d3f5; }
+
+.lbl { display: inline-flex; align-items: center; gap: .6ch; font: 600 14px var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--violet-deep); }
+.lbl::before { content: ""; width: 22px; height: 2px; background: var(--violet); }
+.lbl.gold { color: var(--gold-deep); } .lbl.gold::before { background: var(--gold-deep); }
+.hd { margin-bottom: 30px; }
+.hd h2 { margin-top: 14px; font-size: 52px; }
+.hd-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.demo { flex: none; margin-top: 2px; font: 600 15px var(--mono); padding: 7px 13px; border-radius: 8px; background: var(--ink); color: var(--gold); letter-spacing: .02em; }
+
+.sfoot { position: absolute; left: 84px; right: 84px; bottom: 26px; display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--rule); font: 13px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.sfoot .brand { display: inline-flex; gap: 10px; align-items: center; color: var(--violet-deep); }
+.sfoot img { width: 20px; height: 20px; border-radius: 5px; }
+.ink .sfoot { border-top-color: rgba(233,228,255,.14); color: #8e87b8; }
+.ink .sfoot .brand { color: #c3bce8; }
+
+.note { margin-top: auto; padding: 15px 22px; font-size: 21px; line-height: 1.45; background: var(--gold-wash); border-left: 4px solid var(--gold); border-radius: 3px; }
+.note b { font-weight: 650; }
+
+/* title */
+.s-title { justify-content: center; }
+.blob { position: absolute; border-radius: 50%; }
+.blob.v { display: none; }
+.blob.g { display: none; }
+.title-body { position: relative; }
+.s-title h1 { margin-top: 26px; font-size: 100px; line-height: .98; }
+.s-title { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='68'%3E%3Cg stroke='%231d2a44' stroke-opacity='.06' fill='none'%3E%3Cpath d='M0 .5H96M0 34.5H96M.5 0V34M48.5 34V68'/%3E%3C/g%3E%3C/svg%3E"); background-size: 96px 68px; }
+.s-title .lbl.gold { padding: 7px 12px; background: var(--gold); color: var(--ink); border-radius: 2px; transform: rotate(-1.5deg); box-shadow: 0 6px 10px -6px rgba(29,42,68,.45); }
+.s-title .lbl.gold::before { display: none; }
+.mark-gold { background: linear-gradient(transparent 62%, var(--gold) 62%, var(--gold) 94%, transparent 94%); padding: 0 .06em; }
+.title-sub { margin-top: 28px; font-size: 27px; max-width: 36ch; color: var(--ink-soft); line-height: 1.4; }
+.title-by { display: flex; align-items: center; gap: 18px; margin-top: 50px; }
+.title-by img { width: 52px; height: 52px; border-radius: 12px; }
+.title-by strong { display: block; font: 700 26px var(--display); }
+.title-by span { font: 15px var(--mono); color: var(--ink-soft); }
+
+/* section / statement / end */
+.mid { margin: auto 0; }
+.sec-n { font: 600 30px var(--mono); color: var(--gold); letter-spacing: .1em; }
+.s-section .mid::before { content: ""; display: block; width: 96px; height: 6px; background: var(--gold); margin-bottom: 40px; }
+.s-section h2 { margin-top: 18px; font-size: 100px; color: #fff; }
+.s-section p { margin-top: 26px; font-size: 30px; color: #a49dd0; }
+.stmt { font: 700 66px/1.08 var(--display); letter-spacing: -0.03em; color: #fff; max-width: 21ch; text-wrap: balance; }
+.stmt-sub { margin-top: 34px; font-size: 28px; line-height: 1.4; color: #a49dd0; max-width: 50ch; padding-left: 22px; border-left: 4px solid var(--gold); }
+.end-body h2 { font-size: 84px; color: #fff; }
+.end-body p { margin-top: 22px; font-size: 26px; color: #a49dd0; max-width: 46ch; line-height: 1.45; }
+.end-body img { width: 130px; height: 130px; border-radius: 16px; margin-bottom: 30px; }
+
+/* agenda */
+.agenda { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+.agenda li { display: grid; grid-template-columns: 56px 380px 1fr; align-items: baseline; gap: 18px; padding: 13px 22px; background: var(--card); border: 1px solid var(--rule); border-left: 4px solid var(--violet); border-radius: 10px; }
+.agenda .n { font: 600 21px var(--mono); color: var(--violet-deep); }
+.agenda .t { font: 700 26px var(--display); letter-spacing: -0.02em; }
+.agenda .l { font-size: 18px; color: var(--ink-soft); }
+
+/* points */
+.pts { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; }
+.pts li { display: grid; grid-template-columns: 52px 1fr; gap: 12px; font-size: 25px; line-height: 1.38; color: var(--ink-soft); }
+.pts .n { font: 600 20px var(--mono); color: var(--violet); padding-top: 4px; }
+.pts strong { display: block; color: var(--ink); font: 700 1em var(--display); letter-spacing: -0.01em; }
+.pts .rest { font-size: .88em; }
+
+/* compare */
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-bottom: 24px; }
+.col { padding: 24px 28px; border-radius: 12px; border: 1px solid var(--rule); }
+.col h3 { font-size: 28px; margin-bottom: 14px; }
+.col ul { margin: 0; padding-left: 22px; display: grid; gap: 10px; }
+.col li { font-size: 21px; line-height: 1.38; color: var(--ink-soft); }
+.col.violet { background: var(--violet-wash); border-color: rgba(109,75,208,.28); }
+.col.gold { background: var(--gold-wash); border-color: rgba(201,163,56,.4); }
+.col.ink { background: var(--ink); border-color: var(--ink); }
+.col.ink h3 { color: #fff; } .col.ink li { color: #c3bce8; }
+.col pre { margin: 12px 0 0; font: 16px/1.5 var(--mono); white-space: pre-wrap; }
+.col.ink pre { color: var(--gold); }
+
+/* code */
+.code-grid { display: grid; grid-template-columns: .56fr 1.44fr; gap: 36px; align-items: center; flex: 1; min-height: 0; }
+.code-copy h2 { margin-top: 14px; font-size: 46px; }
+.code-copy p { margin-top: 20px; font-size: 21px; line-height: 1.5; color: var(--ink-soft); }
+.code-copy .demo { display: inline-block; margin-top: 22px; }
+.term { font-variant-ligatures: none; background: var(--ink); border-radius: 14px; overflow: hidden; font-family: var(--mono); box-shadow: 0 2px 4px rgba(29,42,68,.06), 0 14px 26px -16px rgba(29,42,68,.4); }
+.term-bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; background: #100d24; border-bottom: 1px solid rgba(233,228,255,.12); }
+.term-bar i { width: 11px; height: 11px; border-radius: 50%; background: #3b3566; }
+.term-bar i:first-child { background: var(--gold); }
+.term-bar span { margin-left: auto; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #6f68a3; }
+.term-body { padding: 18px 22px 22px; color: #e9e4ff; font-size: 16.5px; line-height: 1.58; }
+.term-body .l { display: block; white-space: pre; min-height: 1.58em; }
+.term .k { color: #b49bff; } .term .s { color: var(--term-green); } .term .c { color: #8c85bd; font-style: italic; } .term .hl { background: rgba(232,198,90,.16); box-shadow: -22px 0 0 rgba(232,198,90,.16), 22px 0 0 rgba(232,198,90,.16); }
+
+/* table */
+.tbl { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 21px; background: var(--card); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+.tbl thead th { font-size: 14px; letter-spacing: .12em; text-transform: uppercase; padding: 13px 20px; background: var(--ink); color: #fff; text-align: left; }
+.tbl tbody th { font: 700 22px var(--display); text-align: left; padding: 13px 20px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.tbl td { padding: 13px 20px; color: var(--ink-soft); border-bottom: 1px solid var(--rule); }
+.tbl tbody tr:last-child > * { border-bottom: 0; }
+.tbl .big { font: 700 26px var(--display); color: var(--ink); }
+.tbl .hot { color: var(--rose); font-weight: 650; }
+
+/* pipeline */
+.lane { display: grid; grid-template-columns: 150px repeat(4, 1fr); gap: 14px; align-items: center; margin-bottom: 18px; }
+.lane-name { font: 600 14px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--violet-deep); }
+.lane-name small { display: block; margin-top: 4px; font: 14px var(--sans); letter-spacing: 0; text-transform: none; color: var(--ink-soft); }
+.box { position: relative; padding: 16px 16px; border-radius: 12px; background: var(--card); border: 2px solid var(--rule); min-height: 104px; }
+.box b { display: block; font: 700 22px var(--display); }
+.box span { display: block; margin-top: 4px; font-size: 16px; color: var(--ink-soft); line-height: 1.35; }
+.box.api { border-color: var(--teal); background: var(--teal-wash); }
+.box.db { border-color: var(--rose); }
+.box.llm { border-color: var(--violet); background: var(--violet-wash); }
+.box:not(:last-child)::after { content: "→"; position: absolute; right: -16px; top: 50%; transform: translateY(-50%); font: 700 20px var(--display); color: var(--ink-soft); }
+
+/* checklist */
+.check { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 30px; }
+.check li { display: grid; grid-template-columns: 30px 1fr; font-size: 20px; line-height: 1.4; color: var(--ink); }
+.check li::before { content: "☐"; color: var(--violet); font-size: 22px; line-height: 1.25; }
+
+/* controls */
+.controls { position: fixed; left: 0; right: 0; bottom: 0; height: 52px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 18px; font: 13px var(--mono); color: #a49dd0; }
+.mid-ctl { display: flex; gap: 14px; align-items: center; }
+.right-ctl { justify-self: end; display: flex; gap: 8px; }
+.controls button { font: inherit; color: #e9e4ff; background: rgba(233,228,255,.08); border: 1px solid rgba(233,228,255,.16); border-radius: 6px; padding: 5px 11px; cursor: pointer; }
+.controls button:hover { border-color: var(--gold); color: var(--gold); }
+.progress { position: fixed; left: 0; right: 0; bottom: 52px; height: 3px; background: rgba(233,228,255,.08); }
+.progress i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .2s; }
+:fullscreen .controls, :fullscreen .progress { opacity: 0; } :fullscreen .controls:hover { opacity: 1; } :fullscreen .viewport { inset: 0; }
+
+
+/* a two-column agenda, and denser point lists */
+.agenda.two { grid-template-columns: 1fr 1fr; gap: 12px 18px; }
+.agenda.two li { grid-template-columns: 48px 1fr; padding: 12px 20px; }
+.agenda.two .t { display: block; font-size: 25px; }
+.agenda.two .l { display: block; margin-top: 2px; }
+.pts.dense { gap: 14px; }
+.pts.dense li { font-size: 23px; }
+.lane { grid-template-columns: 170px repeat(4, 1fr); }
+
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { height: auto; overflow: visible; background: none; }
+  .viewport { position: static; display: block; }
+  .stage { transform: none; height: auto; }
+  .slide { display: flex !important; position: relative; width: 1280px; height: 720px; box-shadow: none; break-after: page; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .controls, .progress { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="viewport"><div class="stage" id="stage"></div></div>
+<nav class="controls">
+  <span>Week 5 · Evals &amp; the Diagram Agent</span>
+  <div class="mid-ctl"><button data-go="prev">←</button><span id="counter"></span><button data-go="next">→</button></div>
+  <div class="right-ctl"><button data-go="full">⛶ F</button><button data-go="print">PDF</button></div>
+</nav>
+<div class="progress"><i id="bar"></i></div>
+
+<script>
+// ------------------------------------------------------------------ the deck
+// Each slide is one object. `demo` adds a tag saying which step of the
+// visualizer (python server.py → http://127.0.0.1:8769) to switch to.
+// Every code block is copied from the files in diagram/ (a few lines are
+// left out to fit, marked ...), so what students see here is what they run.
+const P0 = "00 · The first agent", P1 = "01 · An eval, by hand", P2 = "02 · Scorers",
+      P3 = "03 · Context engineering", P4 = "04 · Small tools", P5 = "05 · Is the eval lying?",
+      P6 = "06 · An honest eval", P7 = "07 · Overlaps";
+
+const SLIDES = [
+  { t: "title" },
+  { t: "statement", text: "Every AI demo works. Can you prove yours got better?",
+    sub: "This week we build a diagram agent, then the thing that matters more: the evals that tell us whether each change helped, and whether the evals themselves can be trusted." },
+  { t: "agenda" },
+  { t: "points", lbl: "The role", title: "What an AI engineer does", points: [
+    ["A system builder", "The model is a given. You build everything around it: the prompt, the tools, the context, the checks."],
+    ["Not ML engineering", "No training, no datasets of millions. Your dataset has 10 cases you wrote by hand, and you read every one."],
+    ["Evals are your test suite", "The same input gives a different output each run. You can't assert one answer. You score properties."],
+    ["Build → eval → improve", "Never ship a change you didn't measure. Never trust a number you didn't check against the product."],
+  ] },
+  { t: "compare", lbl: "This week", title: "Two halves", cols: [
+    { h: "Build and measure · steps 0–4", tone: "gold", items: ["A diagram agent on an Excalidraw canvas", "A golden dataset and a harness", "Scorers: small functions, 0 to 1", "Context and tools, each change measured"] },
+    { h: "Trust the eval? · steps 5–7", tone: "violet", items: ["The eval says 100%. The canvas is broken.", "Make the eval see what the user sees", "Layout: one check for agent and eval", "The dataset can lie too"] },
+  ], note: "<b>The agent loop never changes.</b> It is the week 1 loop. We change the prompt, the tools, the canvas, and the measurements." },
+  { t: "points", lbl: "In class", title: "How to use the visualizer", points: [
+    ["python server.py", "Open http://127.0.0.1:8769, pick a step, press Enter. The slides are at /slides/."],
+    ["Replay or Live", "Replay needs no key: the model's replies are scripted, but the tools, draw() and every scorer run for real. Live calls the model."],
+    ["Watch three things", "The diagram: which function runs. The code: which line runs. The Data panel: the canvas, one row per case, the scores."],
+    ["Every step also runs alone", "cd diagram, then python step2_scorers.py"],
+  ] },
+  { t: "code", lbl: "The canvas", title: "A diagram is a list of elements", file: "an Excalidraw canvas, as JSON",
+    caption: "Every shape, label and arrow is a dict with an id, a type, a position and a size. The agent's job: produce this list. The hard part: labels and arrows that attach to the right shapes.",
+    code: `[
+  {"id": "rect_user", "type": "rectangle",
+   "x": 100, "y": 100, "width": 240, "height": 100},
+  {"id": "rect_user_label", "type": "text", "text": "User",
+   "x": 100, "y": 100, "width": 240, "height": 100,
+   "containerId": "rect_user"},
+  {"id": "arrow_user_api", "type": "arrow",
+   "x": 340, "y": 150, "width": 80, "height": 0,
+   "startBinding": {"elementId": "rect_user"},
+   "endBinding": {"elementId": "rect_api"}}
+]`, hl: [6, 9, 10] },
+
+  // ---------------------------------------------------------------- 00
+  { t: "section", n: "00", title: "The first agent", sub: "One big tool, a friendly prompt" },
+  { t: "code", lbl: P0, title: "The week 1 loop, one big tool", demo: "Step 0", file: "diagram/step0_first_agent.py",
+    caption: "The agent says “Done!”. Then draw() shows what Excalidraw really puts on the canvas: what the user sees.",
+    code: `TOOLS = [generate_diagram, modify_diagram]
+
+
+def run(task):
+    new_canvas()
+    messages = [
+        {"role": "system", "content": FIRST},
+        {"role": "user", "content": task},
+    ]
+    answer = run_agent(messages, TOOLS)
+
+    seen = draw(CANVAS)    # what the user sees
+    return f"The agent says: {answer}\\n\\nWhat the user sees:\\n{summarize(seen)}"`, hl: [12] },
+  { t: "code", lbl: P0, title: "Naive on purpose", file: "diagram/tools.py",
+    caption: "The model must get the layout, sizes, labels and arrows right, all at once, in one JSON blob. The prompt (prompts.FIRST) says “add text labels inside or near shapes”. That's all.",
+    code: `def generate_diagram(elements):
+    """Generate a complete diagram as a list of Excalidraw elements. Use this when
+    the user asks you to create, draw or design a new diagram. Return all the
+    elements: shapes, text labels, and arrows connecting them."""
+    CANVAS[:] = elements
+    return f"Drew {len(elements)} elements."
+
+
+def modify_diagram(element_id, updates):
+    """Change one existing element on the canvas, by its id."""
+    element = find(element_id)
+    if element is None:
+        return f"Error: there is no element {element_id}"
+    element.update(without_nulls(updates))
+    return f"Updated {element_id}."` },
+  { t: "statement", text: "“Done!” Three empty boxes. Two arrows attached to nothing.",
+    sub: "The model put text on the rectangles: Excalidraw draws nothing for that. Its arrows have coordinates, not bindings. And nothing measured any of it." },
+
+  // ---------------------------------------------------------------- 01
+  { t: "section", n: "01", title: "An eval, by hand", sub: "Measure before you change anything" },
+  { t: "points", lbl: P1, title: "Why evals", points: [
+    ["A baseline", "How good is it now? Without a number, every change is a guess."],
+    ["Regressions", "A prompt tweak or a new model can fix one case and break three. Only a run over all of them shows it."],
+    ["Improvement", "When you ship a change, you can prove it helped."],
+    ["Weaknesses", "Hard cases that fail today are your roadmap."],
+  ], note: "If you can't measure it, you can't improve it. <b>Every technique later this week means nothing without a number to compare.</b>" },
+  { t: "code", lbl: P1, title: "A golden test case", file: "diagram/datasets/golden.json",
+    caption: "Not an expected output: expected characteristics. Any flowchart with 3 labeled boxes and 2 connecting arrows is right, whatever the pixels.",
+    code: `{
+  "id": "create-flow",
+  "input": "Draw a simple flowchart with Start, Process
+            and End boxes connected by arrows",
+  "expected": ["3 rectangles: Start, Process, End",
+               "2 arrows connecting them in order"],
+  "keywords": ["Start", "Process", "End"],
+  "difficulty": "simple",
+  "category": "create"
+}`, hl: [5, 6] },
+  { t: "table", lbl: P1, title: "Spread the cases out", head: ["Category", "Example", "Why it is there"], rows: [
+    ["create", "a flowchart, an org chart", "the basics; simple ones are your regression tests"],
+    ["modify", "“make the login box red”", "half the product: editing what exists"],
+    ["domain", "the OAuth 2.0 code flow", "needs facts the model may not know (week 7: RAG)"],
+    ["edge", "“draw something”", "vague input: does it fail gracefully?"],
+  ], note: "Include cases that score badly today. <b>If you only test what already works, no improvement will ever show.</b>" },
+  { t: "code", lbl: P1, title: "The harness: a for loop and a file", demo: "Step 1", file: "diagram/step1_eval_harness.py",
+    caption: "Run each case, keep what came back, save it. A person fills in score and notes later.",
+    code: `def run(dataset):
+    cases = load_dataset(dataset)
+    results = [run_case(case) for case in cases]
+    path = save(results)
+    ...
+
+def run_case(case):
+    new_canvas()
+    messages = [
+        {"role": "system", "content": FIRST},
+        {"role": "user", "content": case["input"]},
+    ]
+    started = time.time()
+    answer = run_agent(messages, TOOLS)
+    return {"id": case["id"], "input": case["input"], "expected": case["expected"],
+            "answer": answer, "elements": list(CANVAS),
+            "seconds": round(time.time() - started, 1),
+            "score": None, "notes": ""}          # a person fills these in`, hl: [19] },
+  { t: "table", lbl: P1, title: "A rubric, so scores mean something", head: ["Score", "Meaning"], rows: [
+    ["5", "every expected characteristic, clean layout"],
+    ["4", "most of them, small problems"],
+    ["3", "the structure is there, but overlaps, wrong links or missing labels"],
+    ["2", "recognisable, mostly wrong"],
+    ["1", "empty, an error, or the wrong kind of diagram"],
+  ] },
+  { t: "compare", lbl: P1, title: "Words you will hear", cols: [
+    { h: "pass@k vs pass^k", tone: "gold", items: ["pass@k: at least one of k tries is right. “Can it ever?”", "pass^k: all k tries are right. “Is it reliable?”", "Users feel pass^k."] },
+    { h: "Capability vs regression", tone: "violet", items: ["Capability: the hard cases. Did we get better?", "Regression: the easy cases. Did we break anything?", "A good suite has both."] },
+  ] },
+  { t: "statement", text: "Scoring by hand: slow, and your neighbour gives a different score.",
+    sub: "Run step 1 and score the table in your head. Then compare with the person next to you. That is why we automate what code can decide." },
+
+  // ---------------------------------------------------------------- 02
+  { t: "section", n: "02", title: "Automated scorers", sub: "Small functions, every run, the same way" },
+  { t: "code", lbl: P2, title: "A scorer is a function", file: "diagram/scorers.py",
+    caption: "One case and its output in, a number from 0 to 1 out. None means “this scorer is not about this case”: one list of scorers covers the whole dataset.",
+    code: `def preservation(case, output):
+    """Modify cases: are the elements that should stay still there, same type?"""
+    keep = case.get("preserved", [])
+    if not keep:
+        return None
+    seed = {e["id"]: e["type"] for e in case["seed"]["elements"]}
+    now = {e["id"]: e["type"] for e in output["elements"]}
+    return sum(1 for id in keep if now.get(id) == seed[id]) / len(keep)
+
+
+def label_keywords(case, output):
+    """Are the right words somewhere: in the answer or on the canvas?"""
+    keywords = case.get("keywords", [])
+    if not keywords:
+        return None
+    words = [output["text"]] + [e.get("text", "") for e in output["elements"]]
+    found = " ".join(words).lower()
+    return sum(1 for word in keywords if word.lower() in found) / len(keywords)`, hl: [5, 15] },
+  { t: "code", lbl: P2, title: "The harness, properly", demo: "Step 2", file: "diagram/evals.py",
+    caption: "Run every case, let every scorer grade it, save the experiment to a file. Keep them all: an eval is a comparison with yesterday.",
+    code: `def run_eval(name, cases, task, scorers):
+    rows = [run_case(case, task, scorers) for case in cases]
+    experiment = {"name": name, "scores": averages(rows), "rows": rows}
+    EXPERIMENTS.mkdir(exist_ok=True)
+    (EXPERIMENTS / f"{name}.json").write_text(json.dumps(experiment, indent=1))
+    return experiment
+
+
+def run_case(case, task, scorers):
+    """Run the agent on one case, then let every scorer grade the output."""
+    started = time.time()
+    output = task(case)
+    scores = {}
+    for scorer in scorers:
+        score = scorer(case, output)
+        if score is not None:                  # None: this scorer skips this case
+            scores[scorer.__name__] = round(score, 2)
+    ...` },
+  { t: "code", lbl: P2, title: "A modify case needs a past", file: "diagram/step2_scorers.py",
+    caption: "“Make the login box red” needs a canvas. build_messages fakes the conversation that drew it. The agent can't tell it from a session it lived through.",
+    code: `def build_messages(case):
+    """A create case is one user message. A modify case starts mid-conversation."""
+    if "seed" not in case:
+        return [{"role": "user", "content": case["input"]}]
+    seed = case["seed"]
+    drew = {"id": "seed", "type": "function", "function": {
+        "name": "generate_diagram", "arguments": json.dumps({"elements": seed["elements"]})}}
+    return [
+        {"role": "user", "content": seed["request"]},
+        {"role": "assistant", "content": "", "tool_calls": [drew]},
+        {"role": "tool", "tool_call_id": "seed", "content": f"Drew {len(seed['elements'])} elements."},
+        {"role": "assistant", "content": seed["reply"]},
+        {"role": "user", "content": case["input"]},
+    ]` },
+  { t: "table", lbl: P2, title: "What eval tools do: the same thing", head: ["Our evals.py", "Braintrust · Evalite · LangSmith"], rows: [
+    ["load_dataset(\"golden.json\")", "data: the dataset"],
+    ["task(case)", "task: run the agent"],
+    ["scorers = [schema, ...]", "scores: [...]"],
+    ["experiments/step2_baseline.json", "an experiment, in a dashboard"],
+    ["compare(baseline, experiment)", "the comparison view, with diffs"],
+  ], note: "Build it by hand once, so every part of the framework maps to something you understand. <b>Then use the framework.</b>" },
+  { t: "statement", text: "The baseline. Preservation: 0%.",
+    sub: "Every modify case redraws the whole diagram with new ids. Schema and label_keywords look fine: they can't see that the labels don't render." },
+  { t: "table", lbl: P2, title: "Three kinds of grader", head: ["Grader", "Good for", "Cost"], rows: [
+    ["Code", "counts, fields, ids, bindings, overlaps", "free, instant, the same every run"],
+    ["LLM as judge", "“is this a sensible OAuth flow?”", "slow, costs money, needs its own eval"],
+    ["Human", "“would I show this to a coworker?”", "the gold standard, and the slowest"],
+  ], note: "Our outputs are structured: <b>code decides most of it</b>. Keep a human score (Great / OK / Rough / Broken) for a sample of each run." },
+
+  // ---------------------------------------------------------------- 03
+  { t: "section", n: "03", title: "Context engineering", sub: "The right tokens, in the right shape" },
+  { t: "points", lbl: P3, title: "A prompt in six parts", dense: true, points: [
+    ["A niche", "Not “diagrams”: technical diagrams. A narrow job lets you be opinionated."],
+    ["Hard rules", "Numbered, about the medium: how labels and arrows really work in Excalidraw."],
+    ["A layout grid", "Models are bad at coordinates. 240×100 boxes, a 320px stride, start at (100, 100)."],
+    ["A pattern library", "Flowchart: diamonds for decisions, yes/no arrows. Org chart: a tree, one row per level."],
+    ["“Do NOT” lines", "For the failures you saw in the eval, and the model's strong habits."],
+    ["A worked example", "Zero-shot to few-shot: the exact elements for one real diagram."],
+  ] },
+  { t: "code", lbl: P3, title: "Rules about the medium", file: "diagram/prompts.py · CONTEXT",
+    caption: "Each line answers a failure from the baseline. The negative lines name the model's habit (text inside a box) and override it.",
+    code: `# Hard rules
+
+1. Labels are SEPARATE text elements. Text on a rectangle draws nothing.
+   To label a shape, add a text element with the shape's x, y, width and height.
+2. Every connecting arrow binds both ends: startBinding.elementId and
+   endBinding.elementId, set to ids that exist.
+3. Width and height at least 20. No empty text.
+4. Pick short meaningful ids: rect_user, arrow_user_api. Never element_42.
+5. To change a diagram, use modify_diagram on the ids that are on the canvas.
+   Never redraw it.
+
+# Do NOT
+
+- Do NOT put text on a rectangle and expect it to show inside the box. It will not.
+- Do NOT draw an arrow between shapes without startBinding and endBinding.
+- Do NOT place two elements at the same coordinates.` },
+  { t: "code", lbl: P3, title: "Let the model see the canvas", demo: "Step 3", file: "diagram/step3_context.py",
+    caption: "Every turn, the canvas goes into the system prompt: not as JSON, as a short summary. Now “the login box” has an id.",
+    code: `def task(case):
+    seed = case.get("seed", {})
+    new_canvas(seed.get("elements", []))
+    messages = [
+        {"role": "system", "content": system_prompt(CANVAS)},
+        {"role": "user", "content": case["input"]},
+    ]
+    answer = run_agent(messages, TOOLS)
+    return {"text": answer, "elements": list(CANVAS), "tool_calls": called_tools(messages)}
+
+
+def system_prompt(elements):
+    """The rules, then what is on the canvas right now."""
+    return f"{CONTEXT}\\n\\n# The canvas now\\n\\n{summarize(elements)}"`, hl: [5, 14] },
+  { t: "compare", lbl: P3, title: "JSON is for machines", cols: [
+    { h: "Raw JSON", tone: "violet", items: ["Quotes, braces, repeated keys on every element", "30–60% of the tokens carry no value", "Reads like data to echo back"],
+      pre: `{"id": "rect_login", "type": "rectangle", "x": 100, ...}` },
+    { h: "summarize(elements)", tone: "gold", items: ["One line per element", "Arrows name the shapes they connect", "Only what a decision needs"],
+      pre: `- rectangle rect_login "login" at (100, 100) 240x100
+- arrow arrow_1: rect_login ("login") → rect_db` },
+  ] },
+  { t: "table", lbl: P3, title: "Did it help? Compare.", head: ["Scorer", "Step 2", "Step 3"], rows: [
+    ["preservation", "0%", '<span class="big">100%</span>'],
+    ["schema", "88%", "100%"],
+    ["structure", "87%", "100%"],
+    ["bound_arrows · connectivity", "—", "100% · new scorers"],
+  ], note: "Two new scorers check the picture, not the parts: <b>are both ends of every arrow attached? Can you walk from the first box to all the others?</b>" },
+
+  // ---------------------------------------------------------------- 04
+  { t: "section", n: "04", title: "Small tools", sub: "One job each. The schema teaches." },
+  { t: "compare", lbl: P4, title: "One big tool, or four small ones?", cols: [
+    { h: "generate_diagram", tone: "violet", items: ["Everything in one JSON blob", "Edit = redraw everything", "The canvas rides in every prompt"] },
+    { h: "query · add · update · remove", tone: "gold", items: ["Each call does one thing", "Edit = update one element by id", "query_canvas: read it when you need it"] },
+  ], note: "The tool list is part of the prompt: <b>the model can only do what its tools let it do.</b>" },
+  { t: "code", lbl: P4, title: "Descriptions are prompt", demo: "Step 4", file: "diagram/schemas.py · RUNTIME_ELEMENT",
+    caption: "The model reads every field description. Use them for the gotchas: REQUIRED, FORBIDDEN, “always a bug”.",
+    code: `text=text("REQUIRED for text elements. FORBIDDEN on shapes: text on a rectangle "
+          "draws nothing. Label a shape with a separate text element."),
+containerId=text("Text elements only: the id of the shape this label sits INSIDE. "
+                 "This is the ONLY way to label a shape."),
+startBinding=obj(["elementId"], elementId=text(
+    "REQUIRED on an arrow that connects two shapes: the shape it starts at. "
+    "Without it the arrow floats free, which is always a bug.")),`, hl: [3, 5] },
+  { t: "code", lbl: P4, title: "Did it look before it changed?", file: "diagram/scorers.py",
+    caption: "tool_choice replaces preservation, which only made sense for generate_diagram. Scorers tied to a tool die with the tool.",
+    code: `def tool_choice(case, output):
+    """create: it must call add_elements.
+    modify: it must call query_canvas BEFORE it changes anything."""
+    calls = output["tool_calls"]
+    if case["category"] in ("create", "domain"):
+        return 1.0 if "add_elements" in calls else 0.0
+    if case["category"] == "modify":
+        changes = [i for i, name in enumerate(calls)
+                   if name in ("add_elements", "update_elements", "remove_elements")]
+        if not changes:
+            return 0.0
+        looked = "query_canvas" in calls[:changes[0]]
+        return 1.0 if looked else 0.5
+    return None` },
+  { t: "table", lbl: P4, title: "Read the row, not just the average", head: ["Scorer", "Step 3", "Step 4", "Why"], rows: [
+    ["tool_choice", "—", "100%", "it queries before every edit"],
+    ["bound_labels", "—", "78%", "new: is every shape labeled?"],
+    ["connectivity", "100%", '<span class="hot">85%</span>', "modify-add: the seed's arrow was never attached"],
+  ], note: "Step 3 redrew the whole diagram and fixed the seed by accident. Step 4 edits in place, so the dataset's own broken arrow stays. <b>Click the row before you believe the number.</b>" },
+  { t: "compare", lbl: P4, title: "Two kinds of scorer", cols: [
+    { h: "Output based", tone: "gold", items: ["Look at the final canvas", "schema, structure, bound_arrows, connectivity", "Survive any refactor: invest in these"] },
+    { h: "Tool coupled", tone: "violet", items: ["Look at how it got there", "preservation, tool_choice", "Rewrite or retire them when the tools change"] },
+  ], note: "An imperfect scorer still gives an honest <b>trend</b>, if before and after use the same one. Trust the direction, hold the number loosely." },
+
+  // ---------------------------------------------------------------- 05
+  { t: "section", n: "05", title: "Is the eval lying?", sub: "The numbers vs. the product" },
+  { t: "statement", text: "The eval says 100% bound labels. Open the app: the boxes are empty.",
+    sub: "Both can't be true. When the eval and the product disagree, the eval is wrong first. Find the lie before you touch the agent." },
+  { t: "code", lbl: P5, title: "What Excalidraw really reads", file: "diagram/canvas.py",
+    caption: "draw() stands in for convertToExcalidrawElements. It reads label and start/end. containerId and startBinding are the names Excalidraw uses AFTER it draws: as input, they are dropped. No warning.",
+    code: `def draw(elements):
+    """The elements on the canvas after Excalidraw reads the model's input."""
+    drawn = []
+    for element in elements:
+        element = without_nulls(element)
+        label = element.pop("label", None)
+        start = element.pop("start", None)
+        end = element.pop("end", None)
+        for name in DROPPED:
+            element.pop(name, None)
+        if element.get("type") != "text":
+            element.pop("text", None)        # text on a shape draws nothing
+
+        if element.get("type") in ARROWS:
+            if start:
+                element["startBinding"] = {"elementId": start["id"]}
+            if end:
+                element["endBinding"] = {"elementId": end["id"]}
+        ...`, hl: [9, 10, 12] },
+  { t: "code", lbl: P5, title: "Score both", demo: "Step 5", file: "diagram/step5_lying_eval.py",
+    caption: "Step 4's agent, one run. The step 4 eval kept exactly what the model sent. The user sees what draw() makes of it.",
+    code: `def run(task):
+    new_canvas()
+    messages = [
+        {"role": "system", "content": SYSTEM},
+        {"role": "user", "content": task},
+    ]
+    run_agent(messages, TOOLS)
+
+    claims = list(CANVAS)        # what the step 4 eval scored
+    drawn = draw(claims)         # what the user sees
+    return score("The eval scored", claims, task) + "\\n" + score("The user sees  ", drawn, task)`, hl: [9, 10] },
+  { t: "table", lbl: P5, title: "One run, two truths", head: ["", "bound_labels", "bound_arrows", "connectivity"], rows: [
+    ["The eval scored", "100%", "100%", "100%"],
+    ["The user sees", '<span class="hot">0%</span>', '<span class="hot">0%</span>', '<span class="hot">33%</span>'],
+  ], note: "The schema taught the wrong vocabulary, and the eval's simulator never ran the renderer. <b>The scorers measured a fiction.</b>" },
+
+  // ---------------------------------------------------------------- 06
+  { t: "section", n: "06", title: "Make the eval honest", sub: "Score what the user sees" },
+  { t: "code", lbl: P6, title: "Fix 1: the names Excalidraw reads", file: "diagram/schemas.py · ADD_SKELETON",
+    caption: "One schema per kind of element. A shape gets a label; an arrow gets start and end. The model can't put a binding on a rectangle.",
+    code: `SHAPE = obj(BASE, id=text("Like rect_login"), type=one_of("rectangle", "ellipse", "diamond"),
+            **POSITION, **STYLE,
+            label=dict(LABEL, description="The ONLY way to put text inside a shape."))
+ARROW = obj(BASE + ("start", "end"), id=text("Like arrow_login_db"), type=one_of("arrow", "line"),
+            **POSITION, **STYLE, start=ENDPOINT, end=ENDPOINT,
+            label=dict(LABEL, description="Optional, short: yes, no, 1. login"))
+NOTE = obj(BASE + ("text",), id=text(), type=one_of("text"), **POSITION, **STYLE,
+           text=text("A floating note. Never use this to label a shape."))
+
+ADD_SKELETON = obj(["elements"], elements=list_of({"anyOf": [SHAPE, ARROW, NOTE]}, "New elements to add"))` },
+  { t: "code", lbl: P6, title: "Fix 2: the eval draws like the app", demo: "Step 6", file: "diagram/tools.py",
+    caption: "One line. The eval's canvas now goes through the same draw() as the product. Eval–production parity.",
+    code: `def add_elements(elements):
+    """Add new elements to the canvas.
+
+    To label a shape, set its label: {"text": "Login"}. Do NOT create a separate
+    text element to label a shape. To connect two shapes, set start: {"id": ...}
+    and end: {"id": ...} on the arrow. The shapes must be in this call or on
+    the canvas already.
+    ..."""
+    drawn = draw(elements)        # what Excalidraw really puts on the canvas
+    CANVAS.extend(drawn)
+    return {"added": len(drawn)}`, hl: [9] },
+  { t: "statement", text: "Same digits as step 4. A different truth.",
+    sub: "78% bound labels, before and after. Before, it was a fiction. Now it is what the user sees. A scorer is only as honest as the simulator it reads." },
+  { t: "points", lbl: P6, title: "Why not 100%?", points: [
+    ["Open the modify rows", "The seed canvas has text on the rectangles: the dataset was written in the old vocabulary."],
+    ["The agent is fine", "It labels everything it adds. The shapes the dataset gave it were never labeled."],
+    ["Same bug, another layer", "The simulator lied in step 5. Here, the dataset lies. Step 7 fixes it."],
+  ] },
+
+  // ---------------------------------------------------------------- 07
+  { t: "section", n: "07", title: "Overlaps", sub: "One check, two uses. An honest dataset." },
+  { t: "code", lbl: P7, title: "Which boxes collide?", file: "diagram/overlaps.py",
+    caption: "Arrows cross shapes on purpose: skip them. A label sits inside its shape: skip it. Two boxes that just touch: 4px of slack.",
+    code: `EPSILON = 4   # pixels: two boxes that just touch are not overlapping
+
+
+def find_overlaps(elements):
+    """Every pair of element ids whose boxes overlap."""
+    boxes = [e for e in elements if can_overlap(e, elements)]
+    pairs = []
+    for i, a in enumerate(boxes):
+        for b in boxes[i + 1:]:
+            if intersects(a, b):
+                pairs.append(sorted([a["id"], b["id"]]))
+    return pairs
+
+
+def can_overlap(element, elements):
+    if element.get("type") in ("arrow", "line"):
+        return False
+    return not is_label_in_a_shape(element, elements)` },
+  { t: "code", lbl: P7, title: "Feedback, the moment it happens", demo: "Step 7", file: "diagram/step7_overlaps.py",
+    caption: "The same function, twice: in the tool result, so the agent fixes it now; and in the no_overlaps scorer, so we can measure it. They can never disagree.",
+    code: `def add_elements(elements):
+    result = tools.add_elements(elements)
+    result["overlaps"] = find_overlaps(CANVAS)    # feedback, the moment it happens
+    return result
+
+
+SCORERS = STEP6_SCORERS + [no_overlaps]
+
+# no_overlaps in scorers.py:
+def no_overlaps(case, output):
+    """1 minus the share of box pairs that overlap."""
+    pairs = count_pairs(output["elements"])
+    if pairs == 0:
+        return None
+    return 1 - len(find_overlaps(output["elements"])) / pairs`, hl: [3, 14] },
+  { t: "points", lbl: P7, title: "golden_2.json: an honest dataset", points: [
+    ["Don't edit the old one", "golden.json stays frozen: it is what every earlier experiment was measured on. Copy it."],
+    ["Seeds, as the app draws them", "Each modify seed now has bound labels and attached arrows."],
+    ["Stress the layout", "Long labels (“API / Resource Server”) and a tight 3×3 grid that touches but must not overlap."],
+    ["Watch create-long-labels", "add_elements → overlaps: 2 pairs → update_elements → none. In the Trace."],
+  ] },
+  { t: "table", lbl: P7, title: "Step 6 → step 7", head: ["Scorer", "Step 6", "Step 7", "What moved it"], rows: [
+    ["bound_labels", "78%", "100%", "the dataset, not the agent"],
+    ["connectivity", "85%", "100%", "the dataset, not the agent"],
+    ["no_overlaps", "—", "100%", "the agent fixed what it was told"],
+  ], note: "A scorer can only catch what the dataset stresses. <b>Then smoke-test the live app again:</b> the next lie is wherever the eval and your eyes disagree." },
+
+  // ---------------------------------------------------------------- wrap up
+  { t: "code", lbl: "The loop", title: "The improvement loop", file: "every lesson from here on",
+    caption: "Context, tools, RAG, human approval: each is one turn of this loop. The first theory is wrong more than half the time.",
+    code: `run the eval
+  → look at the numbers
+  → look at the live product
+  → do they disagree?  the eval is wrong first: find the lie
+       (the simulator · the dataset · a scorer's rules)
+  → make ONE change
+  → run the eval again
+  → did the number move? does the product look better?
+  → write down what you learned, and repeat` },
+  { t: "week" },
+  { t: "points", lbl: "Next", title: "Where evals go from here", dense: true, points: [
+    ["Offline vs online", "Today: offline, a fixed dataset before you ship. Online: score real traffic after you ship."],
+    ["The data flywheel", "Every undo, every “no, I meant…” is a free test case. Turn corrections into golden cases."],
+    ["LLM as judge", "For what code can't decide. Give it a rubric, and eval the judge against your own scores."],
+    ["Domain facts", "The OAuth case needs real knowledge: retrieval (week 7) lifts label_keywords."],
+  ] },
+  { t: "points", lbl: "Practice", title: "Exercises", dense: true, points: [
+    ["Break it on purpose", "Delete the Do NOT lines from prompts.CONTEXT. Run step 3 Live. Which scorer drops?"],
+    ["A new case", "Add a state machine case to golden_2.json. Which scorers apply? Which fail?"],
+    ["pass^3", "Run step 7 Live three times. Which cases pass all three? That is your real reliability."],
+    ["A judge", "Write llm_judge(case, output) with the 1–5 rubric. Compare it with your own scores on 5 cases."],
+    ["Arrow labels", "Make overlaps.py give arrow labels a real box. Does no_overlaps catch the OAuth labels?"],
+  ] },
+  { t: "checklist" },
+  { t: "end" },
+];
+
+const AGENDA = [
+  ["00", "The first agent", "one big tool, a friendly prompt"],
+  ["01", "An eval, by hand", "a golden dataset and a rubric"],
+  ["02", "Automated scorers", "small functions, a baseline"],
+  ["03", "Context engineering", "rules, a grid, the canvas"],
+  ["04", "Small tools", "the schema teaches"],
+  ["05", "Is the eval lying?", "what the user sees"],
+  ["06", "An honest eval", "eval–production parity"],
+  ["07", "Overlaps", "one check, two uses"],
+];
+
+const CHECKLIST = [
+  "A golden dataset: create, modify, domain and edge cases",
+  "Expected characteristics, not one expected output",
+  "A harness that runs every case and saves the experiment",
+  "Code scorers that return None when a case isn't theirs",
+  "A comparison with the last experiment after every change",
+  "A system prompt with rules, a layout grid and a worked example",
+  "Small tools, with descriptions that teach the gotchas",
+  "An eval that runs the same renderer as the product",
+  "One overlap check, used by the agent and by the eval",
+  "A habit: when the eval and the product disagree, check the eval first",
+];
+
+// ------------------------------------------------------------------ rendering
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const KW = /\b(def|return|for|in|if|elif|not|or|and|import|from|else|while|lambda|class|try|except|as)\b/g;
+
+function highlight(code, hl = []) {
+  return code.split("\n").map((line, i) => {
+    let body = line, comment = "";
+    const hash = line.search(/#(?![^"]*"[^"]*$)/);
+    if (hash >= 0) { body = line.slice(0, hash); comment = line.slice(hash); }
+    let html = esc(body).replace(/("""|"[^"]*"|'[^']*')/g, "\u0000$1\u0001");
+    html = html.split(/(\u0000[^\u0001]*\u0001)/).map((part) =>
+      part.startsWith("\u0000") ? `<span class="s">${part.slice(1, -1)}</span>` : part.replace(KW, '<span class="k">$1</span>')).join("");
+    if (comment) html += `<span class="c">${esc(comment)}</span>`;
+    return `<span class="l${hl.includes(i + 1) ? " hl" : ""}">${html}</span>`;
+  }).join("");
+}
+
+// shrink a code block just enough that its longest line fits (mono ≈ 0.6em per character)
+const codeSize = (code) => Math.min(17, Math.floor(720 / (0.61 * Math.max(...code.split("\n").map((l) => l.length))) * 10) / 10);
+const demoTag = (s) => s.demo ? `<span class="demo">▶ Demo · ${s.demo}</span>` : "";
+const head = (s) => `<header class="hd"><div class="hd-row"><span class="lbl">${s.lbl}</span>${demoTag(s)}</div><h2>${s.title}</h2></header>`;
+const note = (s) => s.note ? `<p class="note">${s.note}</p>` : "";
+
+const RENDER = {
+  title: () => `<div class="title-body">
+      <span class="lbl gold">AI Engineering · Week 5</span>
+      <h1>Build it. Measure it.<br><span class="mark-gold">Then check the measure.</span></h1>
+      <p class="title-sub">A diagram agent on an Excalidraw canvas, a golden dataset, scorers, and the improvement loop. Plain Python, no framework.</p>
+      <div class="title-by"><img src="logo-mark.png" alt=""><div><strong>Pouria Jahandideh</strong><span>pjsofts.github.io · AI Engineering</span></div></div>
+    </div>`,
+  statement: (s) => `<div class="mid"><p class="stmt">${s.text}</p>${s.sub ? `<p class="stmt-sub">${s.sub}</p>` : ""}</div>`,
+  section: (s) => `<div class="mid"><span class="sec-n">${s.n}</span><h2>${s.title}</h2><p>${s.sub}</p></div>`,
+  agenda: () => `<header class="hd"><span class="lbl">Today</span><h2>Eight steps: build, measure, improve, check</h2></header>
+    <ol class="agenda two">${AGENDA.map(([n, t, l]) => `<li><span class="n">${n}</span><span><span class="t">${t}</span><span class="l">${l}</span></span></li>`).join("")}</ol>`,
+  points: (s) => `${head(s)}<ol class="pts${s.dense ? " dense" : ""}">${s.points.map(([b, r], i) =>
+      `<li><span class="n">${String(i + 1).padStart(2, "0")}</span><span><strong>${b}</strong> <span class="rest">${r}</span></span></li>`).join("")}</ol>${note(s)}`,
+  compare: (s) => `${head(s)}<div class="cmp">${s.cols.map((c) =>
+      `<div class="col ${c.tone}"><h3>${c.h}</h3><ul>${c.items.map((i) => `<li>${i}</li>`).join("")}</ul>${c.pre ? `<pre>${esc(c.pre)}</pre>` : ""}</div>`).join("")}</div>${note(s)}`,
+  code: (s) => `<div class="code-grid">
+      <div class="code-copy"><span class="lbl">${s.lbl}</span><h2>${s.title}</h2><p>${s.caption}</p>${demoTag(s)}</div>
+      <div class="term"><div class="term-bar"><i></i><i></i><i></i><span>${s.file}</span></div><div class="term-body" style="font-size:${codeSize(s.code)}px">${highlight(s.code, s.hl)}</div></div>
+    </div>`,
+  table: (s) => `${head(s)}<table class="tbl"><thead><tr>${s.head.map((h) => `<th>${h}</th>`).join("")}</tr></thead>
+    <tbody>${s.rows.map((r) => `<tr>${r.map((c, j) => j === 0 ? `<th>${c}</th>` : `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>${note(s)}`,
+  week: () => `<header class="hd"><span class="lbl">The week</span><h2>The whole week on one slide</h2></header>
+    <div class="lane"><div class="lane-name">Build · measure<small>a number to beat</small></div>
+      <div class="box"><b>0 · First agent</b><span>“Done!”: empty boxes, floating arrows</span></div>
+      <div class="box llm"><b>1 · By hand</b><span>golden.json, a 1–5 rubric</span></div>
+      <div class="box api"><b>2 · Scorers</b><span>functions, 0 to 1: the baseline</span></div>
+      <div class="box db"><b>3 · Context</b><span>rules, grid, canvas in the prompt</span></div></div>
+    <div class="lane"><div class="lane-name">Improve · check<small>is the number true?</small></div>
+      <div class="box db"><b>4 · Small tools</b><span>the schema teaches; tool_choice</span></div>
+      <div class="box"><b>5 · Lying eval</b><span>100% in the eval, 0% on screen</span></div>
+      <div class="box llm"><b>6 · Honest eval</b><span>the eval runs the app's draw()</span></div>
+      <div class="box api"><b>7 · Overlaps</b><span>one check, two uses; golden_2</span></div></div>
+    <p class="note"><b>The loop never changed.</b> We changed the prompt, the tools and the canvas, and every time we asked: did the number move, and is the number true?</p>`,
+  checklist: () => `<header class="hd"><span class="lbl">You ship · Week 5</span><h2>An agent, and evals you can trust</h2></header>
+    <ul class="check">${CHECKLIST.map((c) => `<li>${c}</li>`).join("")}</ul>
+    <p class="note"><b>Stretch:</b> an LLM judge with a rubric · pass^k over 3 runs · a human Visual Quality score · run the eval in CI on every prompt change.</p>`,
+  end: () => `<div class="mid end-body"><img src="logo.png" alt=""><h2>Questions?</h2>
+    <p>Next week: context and prompt engineering for mycode. Bring this week's habit: measure the change, then check the measure.</p></div>`,
+};
+
+const stage = document.getElementById("stage");
+const INK = new Set(["statement", "section", "end"]);
+SLIDES.forEach((s, i) => {
+  const a = document.createElement("article");
+  a.className = `slide s-${s.t}${INK.has(s.t) ? " ink" : ""}`;
+  a.innerHTML = RENDER[s.t](s) + (s.t === "title" ? "" :
+    `<footer class="sfoot"><span class="brand"><img src="logo-mark.png" alt="">Pouria Jahandideh · Week 5 · Evals &amp; the Diagram Agent</span><span>${String(i + 1).padStart(2, "0")} / ${SLIDES.length}</span></footer>`);
+  stage.append(a);
+});
+
+// ------------------------------------------------------------------ navigation
+const slides = [...document.querySelectorAll(".slide")];
+const N = slides.length;
+let cur = 0;
+const fromHash = () => { const n = parseInt(location.hash.slice(1), 10); return Number.isFinite(n) ? Math.min(Math.max(n - 1, 0), N - 1) : 0; };
+function show(i) {
+  cur = Math.min(Math.max(i, 0), N - 1);
+  slides.forEach((s, j) => s.classList.toggle("on", j === cur));
+  document.getElementById("counter").textContent = `${cur + 1} / ${N}`;
+  document.getElementById("bar").style.width = `${((cur + 1) / N) * 100}%`;
+  history.replaceState(null, "", `#${cur + 1}`);
+}
+function fit() { document.documentElement.style.setProperty("--s", Math.min(innerWidth / 1280, (innerHeight - 52) / 720)); }
+function full() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.(); }
+document.addEventListener("keydown", (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key;
+  if (["ArrowRight", "PageDown", " ", "l"].includes(k)) show(cur + 1);
+  else if (["ArrowLeft", "PageUp", "h"].includes(k)) show(cur - 1);
+  else if (k === "Home") show(0);
+  else if (k === "End") show(N - 1);
+  else if (k === "f" || k === "F") full();
+  else return;
+  e.preventDefault();
+});
+document.querySelectorAll("[data-go]").forEach((b) => b.onclick = () => {
+  const go = b.dataset.go;
+  if (go === "next") show(cur + 1); else if (go === "prev") show(cur - 1); else if (go === "full") full(); else window.print();
+});
+addEventListener("resize", fit);
+addEventListener("hashchange", () => show(fromHash()));
+fit();
+show(fromHash());
+</script>
+</body>
+</html>

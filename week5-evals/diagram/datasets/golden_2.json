@@ -1,0 +1,105 @@
+[
+  {
+    "id": "create-box",
+    "input": "Draw a single rectangle labeled Hello",
+    "expected": ["1 rectangle with the label Hello"],
+    "keywords": ["Hello"],
+    "difficulty": "simple",
+    "category": "create"
+  },
+  {
+    "id": "create-flow",
+    "input": "Draw a simple flowchart with Start, Process and End boxes connected by arrows",
+    "expected": ["3 rectangles: Start, Process, End", "2 arrows connecting them in order"],
+    "keywords": ["Start", "Process", "End"],
+    "difficulty": "simple",
+    "category": "create"
+  },
+  {
+    "id": "create-decision",
+    "input": "Draw a login flowchart: Login, then a decision \"Password correct?\". Yes goes to Dashboard, no goes to Error.",
+    "expected": ["3 rectangles: Login, Dashboard, Error", "1 diamond: Password correct?", "3 arrows; the two from the diamond say yes and no"],
+    "keywords": ["Login", "Password correct", "Dashboard", "Error"],
+    "difficulty": "medium",
+    "category": "create"
+  },
+  {
+    "id": "create-org",
+    "input": "Draw an org chart: a CEO at the top, 3 VPs below (Engineering, Sales, Marketing), and 2 directors under each VP",
+    "expected": ["10 boxes: 1 CEO, 3 VPs, 6 directors", "9 arrows, from each manager to their reports", "a tree, top to bottom, nothing overlapping"],
+    "keywords": ["CEO", "Engineering", "Sales", "Marketing", "Director"],
+    "difficulty": "hard",
+    "category": "create"
+  },
+  {
+    "id": "create-long-labels",
+    "input": "Draw an architecture, left to right: Web Browser, API / Resource Server, Authentication Service, Primary Database, connected by arrows",
+    "expected": ["4 rectangles, wide enough for their labels", "3 arrows, left to right", "nothing overlapping"],
+    "keywords": ["Web Browser", "API / Resource Server", "Authentication Service", "Primary Database"],
+    "difficulty": "hard",
+    "category": "create"
+  },
+  {
+    "id": "create-tight-grid",
+    "input": "Draw a 3 by 3 grid of boxes labeled A to I, edge to edge with no gaps",
+    "expected": ["9 rectangles in a 3 by 3 grid", "boxes touch, but none overlap"],
+    "difficulty": "edge",
+    "category": "create"
+  },
+  {
+    "id": "modify-color",
+    "input": "Make the login box red",
+    "seed": {
+      "request": "Draw two boxes labeled login and database",
+      "reply": "Done. Login on the left, database on the right.",
+      "elements": [
+        {"id": "rect_login", "type": "rectangle", "x": 100, "y": 100, "width": 240, "height": 100, "boundElements": [{"id": "rect_login_label", "type": "text"}]},
+        {"id": "rect_login_label", "type": "text", "text": "login", "x": 100, "y": 100, "width": 240, "height": 100, "containerId": "rect_login"},
+        {"id": "rect_db", "type": "rectangle", "x": 420, "y": 100, "width": 240, "height": 100, "boundElements": [{"id": "rect_db_label", "type": "text"}]},
+        {"id": "rect_db_label", "type": "text", "text": "database", "x": 420, "y": 100, "width": 240, "height": 100, "containerId": "rect_db"}
+      ]
+    },
+    "expected": ["rect_login is red", "rect_db is unchanged"],
+    "preserved": ["rect_login", "rect_db"],
+    "difficulty": "simple",
+    "category": "modify"
+  },
+  {
+    "id": "modify-add",
+    "input": "Add a Cache box between the API and the Database",
+    "seed": {
+      "request": "Draw a flow from User to API to Database",
+      "reply": "Done: User → API → Database, left to right.",
+      "elements": [
+        {"id": "rect_user", "type": "rectangle", "x": 100, "y": 100, "width": 240, "height": 100, "boundElements": [{"id": "rect_user_label", "type": "text"}]},
+        {"id": "rect_user_label", "type": "text", "text": "User", "x": 100, "y": 100, "width": 240, "height": 100, "containerId": "rect_user"},
+        {"id": "rect_api", "type": "rectangle", "x": 420, "y": 100, "width": 240, "height": 100, "boundElements": [{"id": "rect_api_label", "type": "text"}]},
+        {"id": "rect_api_label", "type": "text", "text": "API", "x": 420, "y": 100, "width": 240, "height": 100, "containerId": "rect_api"},
+        {"id": "rect_db", "type": "rectangle", "x": 740, "y": 100, "width": 240, "height": 100, "boundElements": [{"id": "rect_db_label", "type": "text"}]},
+        {"id": "rect_db_label", "type": "text", "text": "Database", "x": 740, "y": 100, "width": 240, "height": 100, "containerId": "rect_db"},
+        {"id": "arrow_user_api", "type": "arrow", "x": 340, "y": 150, "width": 80, "height": 0, "startBinding": {"elementId": "rect_user"}, "endBinding": {"elementId": "rect_api"}},
+        {"id": "arrow_api_db", "type": "arrow", "x": 660, "y": 150, "width": 80, "height": 0, "startBinding": {"elementId": "rect_api"}, "endBinding": {"elementId": "rect_db"}}
+      ]
+    },
+    "expected": ["4 rectangles: User, API, Cache, Database", "3 arrows: User → API → Cache → Database"],
+    "keywords": ["Cache"],
+    "preserved": ["rect_user", "rect_api", "rect_db"],
+    "difficulty": "medium",
+    "category": "modify"
+  },
+  {
+    "id": "domain-oauth",
+    "input": "Draw the OAuth 2.0 authorization code flow",
+    "expected": ["4 rectangles: User, Client app, Authorization Server, Resource Server", "numbered arrows, one per message"],
+    "keywords": ["Authorization Server", "Resource Server", "authorization code", "access token", "redirect"],
+    "difficulty": "hard",
+    "category": "domain"
+  },
+  {
+    "id": "edge-vague",
+    "input": "draw something",
+    "expected": ["any small, tidy diagram, drawn without asking back"],
+    "difficulty": "edge",
+    "category": "edge"
+  }
+]

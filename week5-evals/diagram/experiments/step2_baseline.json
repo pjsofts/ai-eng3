@@ -1,0 +1,638 @@
+{
+ "name": "step2_baseline",
+ "scores": {
+  "label_keywords": 0.93,
+  "preservation": 0.0,
+  "schema": 0.88,
+  "structure": 0.87
+ },
+ "rows": [
+  {
+   "id": "create-box",
+   "category": "create",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "label_keywords": 1.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: one rectangle labeled Hello.",
+    "elements": [
+     {
+      "id": "rect-1",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "Hello",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     }
+    ],
+    "tool_calls": [
+     "generate_diagram"
+    ]
+   }
+  },
+  {
+   "id": "create-flow",
+   "category": "create",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "label_keywords": 1.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: Start \u2192 Process \u2192 End, connected by arrows.",
+    "elements": [
+     {
+      "id": "rect-1",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "Start",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-2",
+      "type": "rectangle",
+      "x": 420,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "Process",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-3",
+      "type": "rectangle",
+      "x": 740,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "End",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "arrow-1",
+      "type": "arrow",
+      "x": 340,
+      "y": 150.0,
+      "width": 80,
+      "height": 0.0,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "arrow-2",
+      "type": "arrow",
+      "x": 660,
+      "y": 150.0,
+      "width": 80,
+      "height": 0.0,
+      "strokeColor": "#1e1e1e"
+     }
+    ],
+    "tool_calls": [
+     "generate_diagram"
+    ]
+   }
+  },
+  {
+   "id": "create-decision",
+   "category": "create",
+   "scores": {
+    "schema": 1.0,
+    "structure": 0.56,
+    "label_keywords": 1.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: Login, then the decision, with yes to Dashboard and no to Error.",
+    "elements": [
+     {
+      "id": "rect-1",
+      "type": "rectangle",
+      "x": 260,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "Login",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-2",
+      "type": "rectangle",
+      "x": 260,
+      "y": 280,
+      "width": 240,
+      "height": 100,
+      "text": "Password correct?",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-3",
+      "type": "rectangle",
+      "x": 100,
+      "y": 500,
+      "width": 240,
+      "height": 100,
+      "text": "Dashboard",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-4",
+      "type": "rectangle",
+      "x": 420,
+      "y": 500,
+      "width": 240,
+      "height": 100,
+      "text": "Error",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "arrow-1",
+      "type": "arrow",
+      "x": 380.0,
+      "y": 200,
+      "width": 0.0,
+      "height": 80,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "arrow-2",
+      "type": "arrow",
+      "x": 380.0,
+      "y": 380,
+      "width": -160.0,
+      "height": 120,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "text-2",
+      "type": "text",
+      "text": "yes",
+      "x": 306.0,
+      "y": 430.0,
+      "width": 42,
+      "height": 20
+     },
+     {
+      "id": "arrow-3",
+      "type": "arrow",
+      "x": 380.0,
+      "y": 380,
+      "width": 160.0,
+      "height": 120,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "text-3",
+      "type": "text",
+      "text": "no",
+      "x": 466.0,
+      "y": 430.0,
+      "width": 28,
+      "height": 20
+     }
+    ],
+    "tool_calls": [
+     "generate_diagram"
+    ]
+   }
+  },
+  {
+   "id": "create-org",
+   "category": "create",
+   "scores": {
+    "schema": 1.0,
+    "structure": 0.68,
+    "label_keywords": 1.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: the CEO, three VPs, and their directors, top to bottom.",
+    "elements": [
+     {
+      "id": "rect-1",
+      "type": "rectangle",
+      "x": 900,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "CEO",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-2",
+      "type": "rectangle",
+      "x": 260,
+      "y": 280,
+      "width": 240,
+      "height": 100,
+      "text": "VP Engineering",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-3",
+      "type": "rectangle",
+      "x": 100,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "text": "Platform Director",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-4",
+      "type": "rectangle",
+      "x": 900,
+      "y": 280,
+      "width": 240,
+      "height": 100,
+      "text": "VP Sales",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-5",
+      "type": "rectangle",
+      "x": 740,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "text": "EMEA Director",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-6",
+      "type": "rectangle",
+      "x": 1540,
+      "y": 280,
+      "width": 240,
+      "height": 100,
+      "text": "VP Marketing",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-7",
+      "type": "rectangle",
+      "x": 1380,
+      "y": 460,
+      "width": 240,
+      "height": 100,
+      "text": "Brand Director",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "arrow-1",
+      "type": "arrow",
+      "x": 900,
+      "y": 150.0,
+      "width": -400,
+      "height": 180.0,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "arrow-2",
+      "type": "arrow",
+      "x": 380.0,
+      "y": 380,
+      "width": -160.0,
+      "height": 80,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "arrow-3",
+      "type": "arrow",
+      "x": 1020.0,
+      "y": 200,
+      "width": 0.0,
+      "height": 80,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "arrow-4",
+      "type": "arrow",
+      "x": 1020.0,
+      "y": 380,
+      "width": -160.0,
+      "height": 80,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "arrow-5",
+      "type": "arrow",
+      "x": 1140,
+      "y": 150.0,
+      "width": 400,
+      "height": 180.0,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "arrow-6",
+      "type": "arrow",
+      "x": 1660.0,
+      "y": 380,
+      "width": -160.0,
+      "height": 80,
+      "strokeColor": "#1e1e1e"
+     }
+    ],
+    "tool_calls": [
+     "generate_diagram"
+    ]
+   }
+  },
+  {
+   "id": "modify-color",
+   "category": "modify",
+   "scores": {
+    "schema": 1.0,
+    "preservation": 0.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: the login box is red now.",
+    "elements": [
+     {
+      "id": "rect-1",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "login",
+      "backgroundColor": "#fa5252"
+     },
+     {
+      "id": "rect-2",
+      "type": "rectangle",
+      "x": 420,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "database"
+     }
+    ],
+    "tool_calls": [
+     "generate_diagram"
+    ]
+   }
+  },
+  {
+   "id": "modify-add",
+   "category": "modify",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "preservation": 0.0,
+    "label_keywords": 1.0
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: I added a Cache between the API and the Database.",
+    "elements": [
+     {
+      "id": "rect-1",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "User",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-2",
+      "type": "rectangle",
+      "x": 420,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "API",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-3",
+      "type": "rectangle",
+      "x": 740,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "Cache",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-4",
+      "type": "rectangle",
+      "x": 1060,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "Database",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "arrow-1",
+      "type": "arrow",
+      "x": 340,
+      "y": 150.0,
+      "width": 80,
+      "height": 0.0,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "arrow-2",
+      "type": "arrow",
+      "x": 660,
+      "y": 150.0,
+      "width": 80,
+      "height": 0.0,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "arrow-3",
+      "type": "arrow",
+      "x": 980,
+      "y": 150.0,
+      "width": 80,
+      "height": 0.0,
+      "strokeColor": "#1e1e1e"
+     }
+    ],
+    "tool_calls": [
+     "generate_diagram"
+    ]
+   }
+  },
+  {
+   "id": "domain-oauth",
+   "category": "domain",
+   "scores": {
+    "schema": 1.0,
+    "structure": 1.0,
+    "label_keywords": 0.6
+   },
+   "seconds": 0.6,
+   "output": {
+    "text": "Done: the OAuth 2.0 authorization code flow, one numbered arrow per message.",
+    "elements": [
+     {
+      "id": "rect-1",
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 240,
+      "height": 100,
+      "text": "User",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-2",
+      "type": "rectangle",
+      "x": 100,
+      "y": 400,
+      "width": 240,
+      "height": 100,
+      "text": "Client app",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-3",
+      "type": "rectangle",
+      "x": 740,
+      "y": 400,
+      "width": 280,
+      "height": 100,
+      "text": "Authorization Server",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "rect-4",
+      "type": "rectangle",
+      "x": 740,
+      "y": 700,
+      "width": 240,
+      "height": 100,
+      "text": "Resource Server",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent"
+     },
+     {
+      "id": "arrow-1",
+      "type": "arrow",
+      "x": 220.0,
+      "y": 200,
+      "width": 0.0,
+      "height": 200,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "text-1",
+      "type": "text",
+      "text": "1. log in",
+      "x": 226.0,
+      "y": 290.0,
+      "width": 126,
+      "height": 20
+     },
+     {
+      "id": "arrow-2",
+      "type": "arrow",
+      "x": 340,
+      "y": 450.0,
+      "width": 400,
+      "height": 0.0,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "text-2",
+      "type": "text",
+      "text": "2. ask for login",
+      "x": 546.0,
+      "y": 440.0,
+      "width": 224,
+      "height": 20
+     },
+     {
+      "id": "arrow-3",
+      "type": "arrow",
+      "x": 740,
+      "y": 450.0,
+      "width": -400,
+      "height": 0.0,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "text-3",
+      "type": "text",
+      "text": "3. authorization code",
+      "x": 546.0,
+      "y": 440.0,
+      "width": 294,
+      "height": 20
+     },
+     {
+      "id": "arrow-4",
+      "type": "arrow",
+      "x": 340,
+      "y": 450.0,
+      "width": 400,
+      "height": 300.0,
+      "strokeColor": "#1e1e1e"
+     },
+     {
+      "id": "text-4",
+      "type": "text",
+      "text": "4. call the API",
+      "x": 546.0,
+      "y": 590.0,
+      "width": 210,
+      "height": 20
+     }
+    ],
+    "tool_calls": [
+     "generate_diagram"
+    ]
+   }
+  },
+  {
+   "id": "edge-vague",
+   "category": "edge",
+   "scores": {
+    "schema": 0.0
+   },
+   "seconds": 0.3,
+   "output": {
+    "text": "Sure! What would you like me to draw? A flowchart, an architecture diagram, or something else?",
+    "elements": [],
+    "tool_calls": []
+   }
+  }
+ ]
+}
