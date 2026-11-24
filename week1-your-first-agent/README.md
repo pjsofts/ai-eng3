@@ -17,6 +17,7 @@ cd agent && python step4_agent_loop.py
 Requires Python 3.10+.
 
 ```bash
+cd week1-your-first-agent
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt                      # openai, python-dotenv
 cp .env.example .env          # only needed for Live mode

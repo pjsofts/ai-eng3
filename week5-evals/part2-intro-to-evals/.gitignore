@@ -1,0 +1,5 @@
+.env
+__pycache__/
+.venv/
+evals/runs/
+evals/smoke_comment.md

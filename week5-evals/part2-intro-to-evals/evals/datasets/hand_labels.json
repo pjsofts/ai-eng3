@@ -1,0 +1,107 @@
+{
+ "graded_by": "the course team, by hand",
+ "run": "step1_small",
+ "field": "root_cause",
+ "labels": [
+  {
+   "id": "r01",
+   "verdict": "correct"
+  },
+  {
+   "id": "r02",
+   "verdict": "correct"
+  },
+  {
+   "id": "r03",
+   "verdict": "correct"
+  },
+  {
+   "id": "r04",
+   "verdict": "correct"
+  },
+  {
+   "id": "r05",
+   "verdict": "correct"
+  },
+  {
+   "id": "r06",
+   "verdict": "correct"
+  },
+  {
+   "id": "r07",
+   "verdict": "correct"
+  },
+  {
+   "id": "r08",
+   "verdict": "correct"
+  },
+  {
+   "id": "r09",
+   "verdict": "correct"
+  },
+  {
+   "id": "r10",
+   "verdict": "correct"
+  },
+  {
+   "id": "r11",
+   "verdict": "correct"
+  },
+  {
+   "id": "r12",
+   "verdict": "correct"
+  },
+  {
+   "id": "r13",
+   "verdict": "correct"
+  },
+  {
+   "id": "r14",
+   "verdict": "correct"
+  },
+  {
+   "id": "r15",
+   "verdict": "correct"
+  },
+  {
+   "id": "r16",
+   "verdict": "correct"
+  },
+  {
+   "id": "r17",
+   "verdict": "correct"
+  },
+  {
+   "id": "r18",
+   "verdict": "correct"
+  },
+  {
+   "id": "r19",
+   "verdict": "correct"
+  },
+  {
+   "id": "r20",
+   "verdict": "correct"
+  },
+  {
+   "id": "r21",
+   "verdict": "incorrect",
+   "note": "The renewal is a reassurance, not a cause."
+  },
+  {
+   "id": "r22",
+   "verdict": "incorrect",
+   "note": "Restarting the pods was the fix, not the cause."
+  },
+  {
+   "id": "r23",
+   "verdict": "incorrect",
+   "note": "Suspected but not confirmed: should be null."
+  },
+  {
+   "id": "r24",
+   "verdict": "incorrect",
+   "note": "The backlog is the symptom; the cause is unknown."
+  }
+ ]
+}

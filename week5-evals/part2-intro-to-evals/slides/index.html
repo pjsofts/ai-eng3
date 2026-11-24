@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introduction to Evals — Slides</title>
+<link rel="icon" href="logo-mark.png">
+<style>
+@font-face { font-family: "Space Grotesk"; font-weight: 400 700; font-display: swap; src: url("fonts/space-grotesk.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 100 900; font-display: swap; src: url("fonts/inter.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 100 800; font-display: swap; src: url("fonts/jetbrains-mono.woff2") format("woff2"); }
+
+/* The same brand as the course site: the studio. Brick white, denim navy, chair red, sticky-note yellow. */
+:root {
+  --paper: #f5f6f3; --paper-2: #e6e9e8; --card: #ffffff;
+  --ink: #1d2a44; --ink-soft: #4b5568;
+  --violet: #d42f26; --violet-deep: #a8231c; --violet-wash: #fbe6e4;
+  --gold: #f6d64a; --gold-deep: #8a5a26; --gold-wash: #fdf3c4;
+  --teal: #0f8f80; --teal-wash: #ddf3ef;
+  --rose: #c2416b;
+  --term-green: #7ddca4;
+  --rule: rgba(29, 42, 68, 0.12);
+  --display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { overflow: hidden; background: #0b0918; font-family: var(--sans); color: var(--ink); }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: -0.03em; line-height: 1.02; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+code, .mono { font-family: var(--mono); }
+
+.viewport { position: fixed; inset: 0 0 52px 0; display: grid; place-items: center; }
+.stage { width: 1280px; height: 720px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(var(--s, 1)); }  /* centred even when the window is shorter than 720px */
+
+/* ---------------- a slide ---------------- */
+.slide { position: absolute; inset: 0; display: none; flex-direction: column; padding: 60px 84px 80px; background: var(--paper); overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0,0,0,.8); }
+.slide.on { display: flex; }
+.slide.ink { background: var(--ink); color: #d9d3f5; }
+
+.lbl { display: inline-flex; align-items: center; gap: .6ch; font: 600 14px var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--violet-deep); }
+.lbl::before { content: ""; width: 22px; height: 2px; background: var(--violet); }
+.lbl.gold { color: var(--gold-deep); } .lbl.gold::before { background: var(--gold-deep); }
+.hd { margin-bottom: 30px; }
+.hd h2 { margin-top: 14px; font-size: 52px; }
+.hd-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.demo { flex: none; margin-top: 2px; font: 600 15px var(--mono); padding: 7px 13px; border-radius: 8px; background: var(--ink); color: var(--gold); letter-spacing: .02em; }
+
+.sfoot { position: absolute; left: 84px; right: 84px; bottom: 26px; display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--rule); font: 13px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.sfoot .brand { display: inline-flex; gap: 10px; align-items: center; color: var(--violet-deep); }
+.sfoot img { width: 20px; height: 20px; border-radius: 5px; }
+.ink .sfoot { border-top-color: rgba(233,228,255,.14); color: #8e87b8; }
+.ink .sfoot .brand { color: #c3bce8; }
+
+.note { margin-top: auto; padding: 15px 22px; font-size: 21px; line-height: 1.45; background: var(--gold-wash); border-left: 4px solid var(--gold); border-radius: 3px; }
+.note b { font-weight: 650; }
+
+/* title */
+.s-title { justify-content: center; }
+.blob { position: absolute; border-radius: 50%; }
+.blob.v { display: none; }
+.blob.g { display: none; }
+.title-body { position: relative; }
+.s-title h1 { margin-top: 26px; font-size: 100px; line-height: .98; }
+.s-title { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='68'%3E%3Cg stroke='%231d2a44' stroke-opacity='.06' fill='none'%3E%3Cpath d='M0 .5H96M0 34.5H96M.5 0V34M48.5 34V68'/%3E%3C/g%3E%3C/svg%3E"); background-size: 96px 68px; }
+.s-title .lbl.gold { padding: 7px 12px; background: var(--gold); color: var(--ink); border-radius: 2px; transform: rotate(-1.5deg); box-shadow: 0 6px 10px -6px rgba(29,42,68,.45); }
+.s-title .lbl.gold::before { display: none; }
+.mark-gold { background: linear-gradient(transparent 62%, var(--gold) 62%, var(--gold) 94%, transparent 94%); padding: 0 .06em; }
+.title-sub { margin-top: 28px; font-size: 27px; max-width: 36ch; color: var(--ink-soft); line-height: 1.4; }
+.title-by { display: flex; align-items: center; gap: 18px; margin-top: 50px; }
+.title-by img { width: 52px; height: 52px; border-radius: 12px; }
+.title-by strong { display: block; font: 700 26px var(--display); }
+.title-by span { font: 15px var(--mono); color: var(--ink-soft); }
+
+/* section / statement / end */
+.mid { margin: auto 0; }
+.sec-n { font: 600 30px var(--mono); color: var(--gold); letter-spacing: .1em; }
+.s-section .mid::before { content: ""; display: block; width: 96px; height: 6px; background: var(--gold); margin-bottom: 40px; }
+.s-section h2 { margin-top: 18px; font-size: 100px; color: #fff; }
+.s-section p { margin-top: 26px; font-size: 30px; color: #a49dd0; }
+.stmt { font: 700 66px/1.08 var(--display); letter-spacing: -0.03em; color: #fff; max-width: 21ch; text-wrap: balance; }
+.stmt-sub { margin-top: 34px; font-size: 28px; line-height: 1.4; color: #a49dd0; max-width: 50ch; padding-left: 22px; border-left: 4px solid var(--gold); }
+.end-body h2 { font-size: 84px; color: #fff; }
+.end-body p { margin-top: 22px; font-size: 26px; color: #a49dd0; max-width: 46ch; line-height: 1.45; }
+.end-body img { width: 130px; height: 130px; border-radius: 16px; margin-bottom: 30px; }
+
+/* agenda */
+.agenda { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+.agenda li { display: grid; grid-template-columns: 56px 380px 1fr; align-items: baseline; gap: 18px; padding: 13px 22px; background: var(--card); border: 1px solid var(--rule); border-left: 4px solid var(--violet); border-radius: 10px; }
+.agenda .n { font: 600 21px var(--mono); color: var(--violet-deep); }
+.agenda .t { font: 700 26px var(--display); letter-spacing: -0.02em; }
+.agenda .l { font-size: 18px; color: var(--ink-soft); }
+
+/* points */
+.pts { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; }
+.pts li { display: grid; grid-template-columns: 52px 1fr; gap: 12px; font-size: 25px; line-height: 1.38; color: var(--ink-soft); }
+.pts .n { font: 600 20px var(--mono); color: var(--violet); padding-top: 4px; }
+.pts strong { display: block; color: var(--ink); font: 700 1em var(--display); letter-spacing: -0.01em; }
+.pts .rest { font-size: .88em; }
+
+/* compare */
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-bottom: 24px; }
+.col { padding: 24px 28px; border-radius: 12px; border: 1px solid var(--rule); }
+.col h3 { font-size: 28px; margin-bottom: 14px; }
+.col ul { margin: 0; padding-left: 22px; display: grid; gap: 10px; }
+.col li { font-size: 21px; line-height: 1.38; color: var(--ink-soft); }
+.col.violet { background: var(--violet-wash); border-color: rgba(109,75,208,.28); }
+.col.gold { background: var(--gold-wash); border-color: rgba(201,163,56,.4); }
+.col.ink { background: var(--ink); border-color: var(--ink); }
+.col.ink h3 { color: #fff; } .col.ink li { color: #c3bce8; }
+.col pre { margin: 12px 0 0; font: 16px/1.5 var(--mono); white-space: pre-wrap; }
+.col.ink pre { color: var(--gold); }
+
+/* code */
+.code-grid { display: grid; grid-template-columns: .56fr 1.44fr; gap: 36px; align-items: center; flex: 1; min-height: 0; }
+.code-copy h2 { margin-top: 14px; font-size: 46px; }
+.code-copy p { margin-top: 20px; font-size: 21px; line-height: 1.5; color: var(--ink-soft); }
+.code-copy .demo { display: inline-block; margin-top: 22px; }
+.term { font-variant-ligatures: none; background: var(--ink); border-radius: 14px; overflow: hidden; font-family: var(--mono); box-shadow: 0 2px 4px rgba(29,42,68,.06), 0 14px 26px -16px rgba(29,42,68,.4); }
+.term-bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; background: #100d24; border-bottom: 1px solid rgba(233,228,255,.12); }
+.term-bar i { width: 11px; height: 11px; border-radius: 50%; background: #3b3566; }
+.term-bar i:first-child { background: var(--gold); }
+.term-bar span { margin-left: auto; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #6f68a3; }
+.term-body { padding: 18px 22px 22px; color: #e9e4ff; font-size: 16.5px; line-height: 1.58; }
+.term-body .l { display: block; white-space: pre; min-height: 1.58em; }
+.term .k { color: #b49bff; } .term .s { color: var(--term-green); } .term .c { color: #8c85bd; font-style: italic; } .term .hl { background: rgba(232,198,90,.16); box-shadow: -22px 0 0 rgba(232,198,90,.16), 22px 0 0 rgba(232,198,90,.16); }
+
+/* table */
+.tbl { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 21px; background: var(--card); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+.tbl thead th { font-size: 14px; letter-spacing: .12em; text-transform: uppercase; padding: 13px 20px; background: var(--ink); color: #fff; text-align: left; }
+.tbl tbody th { font: 700 22px var(--display); text-align: left; padding: 13px 20px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.tbl td { padding: 13px 20px; color: var(--ink-soft); border-bottom: 1px solid var(--rule); }
+.tbl tbody tr:last-child > * { border-bottom: 0; }
+.tbl .big { font: 700 26px var(--display); color: var(--ink); }
+.tbl .hot { color: var(--rose); font-weight: 650; }
+
+/* pipeline */
+.lane { display: grid; grid-template-columns: 150px repeat(4, 1fr); gap: 14px; align-items: center; margin-bottom: 18px; }
+.lane-name { font: 600 14px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--violet-deep); }
+.lane-name small { display: block; margin-top: 4px; font: 14px var(--sans); letter-spacing: 0; text-transform: none; color: var(--ink-soft); }
+.box { position: relative; padding: 16px 16px; border-radius: 12px; background: var(--card); border: 2px solid var(--rule); min-height: 104px; }
+.box b { display: block; font: 700 22px var(--display); }
+.box span { display: block; margin-top: 4px; font-size: 16px; color: var(--ink-soft); line-height: 1.35; }
+.box.api { border-color: var(--teal); background: var(--teal-wash); }
+.box.db { border-color: var(--rose); }
+.box.llm { border-color: var(--violet); background: var(--violet-wash); }
+.box:not(:last-child)::after { content: "→"; position: absolute; right: -16px; top: 50%; transform: translateY(-50%); font: 700 20px var(--display); color: var(--ink-soft); }
+
+/* checklist */
+.check { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 30px; }
+.check li { display: grid; grid-template-columns: 30px 1fr; font-size: 20px; line-height: 1.4; color: var(--ink); }
+.check li::before { content: "☐"; color: var(--violet); font-size: 22px; line-height: 1.25; }
+
+/* controls */
+.controls { position: fixed; left: 0; right: 0; bottom: 0; height: 52px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 18px; font: 13px var(--mono); color: #a49dd0; }
+.mid-ctl { display: flex; gap: 14px; align-items: center; }
+.right-ctl { justify-self: end; display: flex; gap: 8px; }
+.controls button { font: inherit; color: #e9e4ff; background: rgba(233,228,255,.08); border: 1px solid rgba(233,228,255,.16); border-radius: 6px; padding: 5px 11px; cursor: pointer; }
+.controls button:hover { border-color: var(--gold); color: var(--gold); }
+.progress { position: fixed; left: 0; right: 0; bottom: 52px; height: 3px; background: rgba(233,228,255,.08); }
+.progress i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .2s; }
+:fullscreen .controls, :fullscreen .progress { opacity: 0; } :fullscreen .controls:hover { opacity: 1; } :fullscreen .viewport { inset: 0; }
+
+
+/* a two-column agenda, and denser point lists */
+.agenda.two { grid-template-columns: 1fr 1fr; gap: 12px 18px; }
+.agenda.two li { grid-template-columns: 48px 1fr; padding: 12px 20px; }
+.agenda.two .t { display: block; font-size: 25px; }
+.agenda.two .l { display: block; margin-top: 2px; }
+.pts.dense { gap: 14px; }
+.pts.dense li { font-size: 23px; }
+.lane { grid-template-columns: 170px repeat(4, 1fr); }
+
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { height: auto; overflow: visible; background: none; }
+  .viewport { position: static; display: block; }
+  .stage { position: static; transform: none; height: auto; }
+  .slide { display: flex !important; position: relative; width: 1280px; height: 720px; box-shadow: none; break-after: page; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .controls, .progress { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="viewport"><div class="stage" id="stage"></div></div>
+<nav class="controls">
+  <span>Introduction to evals</span>
+  <div class="mid-ctl"><button data-go="prev">←</button><span id="counter"></span><button data-go="next">→</button></div>
+  <div class="right-ctl"><button data-go="full">⛶ F</button><button data-go="print">PDF</button></div>
+</nav>
+<div class="progress"><i id="bar"></i></div>
+
+<script>
+// ------------------------------------------------------------------ the deck
+// Each slide is one object. `demo` adds a tag saying which step to run in the
+// terminal (cd evals; python stepN_….py).
+// Every code block is copied from the files in evals/ (a few lines are left
+// out to fit, marked ...), so what students see here is what they run.
+const L1 = "Lesson 1 · Which model?", L2 = "Lesson 2 · A minimum viable eval",
+      L3 = "Lesson 3 · Fix the prompt first", L4 = "Lesson 4 · Evals in production";
+
+const SLIDES = [
+  { t: "title" },
+  { t: "statement", text: "“Which model should we use?” Most teams answer with a feeling.",
+    sub: "A favourite model, a benchmark someone posted, the most expensive one to be safe. Today we answer it with 24 cases, a grader and a cost table, and then we keep the answer true after we ship." },
+  { t: "agenda" },
+  { t: "points", lbl: "The idea", title: "What an eval is", points: [
+    ["A case", "A real input, plus the answer a person says is right."],
+    ["A grader", "Decides if the model's answer matches: code, an LLM judge, or a person."],
+    ["A run", "Every case through one model with one prompt. Scores, and what it cost."],
+    ["A decision", "Compare runs. Ship the one that is good enough and cheapest. Rerun when the prompt or the cases change."],
+  ] },
+  { t: "code", lbl: "The task", title: "Three fields from an incident report", file: "evals/datasets/golden.json · r09",
+    caption: "service and severity have one right value. root_cause is a sentence that can be said many ways, or null when the report states no cause. That mix decides the graders.",
+    code: `# INC-2109 · checkout
+Severity: sev2
+Checkout was slow and 7% of orders timed out between 11:00 and 11:30.
+Root cause: a config push set the database connection pool size for checkout to 5 instead of 50.
+
+"expected": {
+  "service": "checkout",
+  "severity": "sev2",
+  "root_cause": "A config push set the database connection pool size to 5."
+}`, hl: [7, 8, 9] },
+  { t: "table", lbl: "The task", title: "24 cases, three kinds", head: ["Kind", "Cases", "What makes it hard"], rows: [
+    ["typical", "14", "one service, a stated cause. One says sev1, then “downgraded to sev2”."],
+    ["multi_service", "5", "other services are named: reported by, checked, affected downstream"],
+    ["open", "5", "no root cause yet: under investigation, suspected, a reassurance, a fix"],
+  ], note: "Mix the kinds in the share you see in production, and <b>keep the hard ones</b>: a suite of easy cases can't show you an improvement." },
+  { t: "points", lbl: "In class", title: "How to run it", points: [
+    ["cd evals; python step1_pick_a_model.py", "Then step 2, 3, … in order. Steps 2–5 grade the answers step 1 saved in runs/."],
+    ["Replay or Live", "Replay needs no key: replay.py plays the models and the judge. The harness, graders, costs and decisions run for real. Live: copy .env.example to .env."],
+    ["Your Live numbers will differ", "The slides show Replay. Models are not deterministic: run each setup twice before you believe a number."],
+  ] },
+
+  // ---------------------------------------------------------------- lesson 1
+  { t: "section", n: "01", title: "Which model?", sub: "The cheapest one that is good enough" },
+  { t: "points", lbl: L1, title: "Five steps", points: [
+    ["Set an accuracy floor", "The share of cases that must be right to ship. It comes from what one wrong answer costs."],
+    ["Same cases, same prompt, every model", "Change one thing at a time, or you can't tell what moved the score."],
+    ["Cost per call", "Read input and output tokens from the response's usage. Never estimate them."],
+    ["Cost per completed task", "A call that gets the answer wrong was paid for and did nothing."],
+    ["Pick the cheapest above the floor", "Not the best. The cheapest that is good enough."],
+  ] },
+  { t: "statement", text: "The floor is a business number, not a model number.",
+    sub: "A wrong root cause sends the on-call engineer the wrong way. Our review team can catch and fix about 1 report in 10. So 9 in 10 must be right: the floor is 90%." },
+  { t: "code", lbl: L1, title: "The ladder, and what a call costs", file: "evals/models.py",
+    caption: "Three models, cheapest first. The prices are per million tokens and they change: keep them in one place.",
+    code: `LADDER = [
+    Model("small", os.environ.get("SMALL_MODEL", "gpt-4.1-nano"), 0.10, 0.40),
+    Model("medium", os.environ.get("MEDIUM_MODEL", "gpt-4.1-mini"), 0.40, 1.60),
+    Model("large", os.environ.get("LARGE_MODEL", "gpt-4.1"), 2.00, 8.00),
+]
+
+def cost(model, reply, batch=False):
+    """Dollars for one call: tokens times the price per token."""
+    dollars = (reply.input_tokens * model.input_price + reply.output_tokens * model.output_price) / 1_000_000
+    return dollars * (BATCH_DISCOUNT if batch else 1)`, hl: [9] },
+  { t: "code", lbl: L1, title: "A run: every case, one model, one prompt", file: "evals/harness.py",
+    caption: "Keep the answers, not only the score: the next steps grade them again without calling the model.",
+    code: `def run(name, model, prompt, cases):
+    """Ask the model about every case. Keep the answers and what each call cost."""
+    rows = []
+    for case in cases:
+        reply = chat(model.id, PROMPTS[prompt], case["report"])
+        rows.append({"id": case["id"], "category": case["category"],
+                     "answer": parse_answer(reply.text), "raw": reply.text,
+                     "cost": cost(model, reply)})
+    ...
+
+def grade(result, cases, grader):
+    """A case is completed only when every field is right."""
+    by_id = {case["id"]: case for case in cases}
+    for row in result["rows"]:
+        row["grades"] = grader(by_id[row["id"]], row["answer"])
+        row["completed"] = all(row["grades"][field] for field in ("service", "severity", "root_cause"))`, hl: [16] },
+  { t: "code", lbl: L1, title: "Step 1: the whole decision", demo: "step 1", file: "evals/step1_pick_a_model.py",
+    caption: "Three runs, one table, one rule. Exact checks for service and severity; for root_cause, a word-overlap check for now.",
+    code: `FLOOR = 0.90
+
+
+def main():
+    cases = load_cases()
+    results = []
+    for model in LADDER:                                       # same cases, same prompt
+        result = run(f"step1_{model.tier}", model, "v1", cases)
+        results.append(grade(result, cases, by_code))
+
+    print(report(results, FLOOR))
+    choice = cheapest(results, FLOOR)`, hl: [1, 12] },
+  { t: "table", lbl: L1, title: "Step 1: small is cheapest, and not good enough", head: ["Model · prompt", "typical", "multi", "open", "overall", "per 1,000 done"], rows: [
+    ["small · v1", "93%", "100%", '<span class="hot">20%</span>', '<span class="hot">79%</span>', "$0.030"],
+    ["medium · v1", "100%", "100%", "100%", "100%", "$0.093"],
+    ["large · v1", "93%", "100%", "100%", "96%", "$0.487"],
+  ], note: "Floor 90%: small is out. Medium is three times the price of small and five times cheaper than large. <b>Pick: medium.</b> For now." },
+  { t: "compare", lbl: L1, title: "Per call, or per completed task?", cols: [
+    { h: "Cost per call", tone: "violet", items: ["What the pricing page shows", "Counts calls that got it wrong", "Makes the cheap model look like a bargain"] },
+    { h: "Cost per completed task", tone: "gold", items: ["Run cost ÷ cases fully right", "A wrong answer costs money and does nothing", "The number you actually pay per useful result"] },
+  ], note: "Batch prices are half of standard prices. <b>Never compare a batch run with a standard one</b>: compare like with like." },
+
+  // ---------------------------------------------------------------- lesson 2
+  { t: "section", n: "02", title: "A minimum viable eval", sub: "The quickest grader you can trust, per field" },
+  { t: "table", lbl: L2, title: "One grader per field", head: ["Field", "Grader", "Why"], rows: [
+    ["service", "code: exact match", "one right value"],
+    ["severity", "code: exact match", "sev1, sev2 or sev3: one right value"],
+    ["root_cause", "LLM judge + rubric", "the same cause can be written many ways"],
+    ["a sample of all", "a person", "to check the judge, not to grade everything"],
+  ], note: "The rule: <b>the quickest grader you can trust.</b> Code first, a judge where code can't decide, people last." },
+  { t: "points", lbl: L2, title: "Cases that are worth having", points: [
+    ["Real data", "Inputs from your own task, not invented ones. Our reports are short, but they are the right kind."],
+    ["Graded automatically", "A case nobody can grade without a meeting won't get run."],
+    ["Volume over polish", "20–50 plain cases beat 5 perfect ones. Start small and grow it."],
+    ["Edge cases in proportion", "As many “open” reports as production has, and every kind you have seen fail."],
+  ] },
+  { t: "code", lbl: L2, title: "Code graders, and their limit", file: "evals/graders.py",
+    caption: "Step 1 graded the sentence by word overlap. It is fast and free, and it marks a right answer in other words as wrong.",
+    code: `def loose(expected, got):
+    """At least half of the expected content words appear in the answer."""
+    if expected is None or got is None:
+        return expected is got
+    wanted = words(expected)
+    return len(wanted & words(got)) / len(wanted) >= 0.5
+
+
+def by_code(case, answer):
+    """Step 1: exact for the two enum fields, loose for the sentence."""
+    if answer is None:
+        return {field: False for field in FIELDS}
+    expected = case["expected"]
+    return {"service": exact(expected["service"], answer.get("service")),
+            "severity": exact(expected["severity"], answer.get("severity")),
+            "root_cause": loose(expected["root_cause"], answer.get("root_cause"))}`, hl: [6] },
+  { t: "code", lbl: L2, title: "The judge: a rubric, not an answer key", file: "evals/prompts.py · RUBRIC_V1",
+    caption: "Written rules for correct and incorrect. The judge gets the report, the answer and this rubric. It never sees our expected answer.",
+    code: `The answer is the root cause of the incident, taken from the report, or null.
+
+correct: it names the cause the report states, in any wording.
+         Or it is null, and the report states no cause.
+incorrect: it names a cause the report does not state. This includes turning a
+         symptom, an action someone took, or a reassurance into a cause.
+         Or it is null, although the report states a cause.
+unknown: you cannot decide from the report.` , hl: [5, 6, 8] },
+  { t: "code", lbl: L2, title: "A verdict the code can read", file: "evals/graders.py",
+    caption: "A JSON schema makes the reply parseable. The explanation comes first, so the judge reasons before it decides. “unknown” is allowed: a judge that must pick will guess.",
+    code: `VERDICT = {"name": "verdict", "strict": True, "schema": {
+    "type": "object",
+    "properties": {
+        "explanation": {"type": "string", "description": "One short sentence: why."},
+        "verdict": {"type": "string", "enum": ["correct", "incorrect", "unknown"]},
+    },
+    ...
+}}
+
+
+def judge(report, answer, rubric):
+    """Grade an answer against the REPORT, not against our expected answer:
+    a right answer in other words must not lose points. "unknown" is allowed,
+    so the judge never has to guess."""
+    ...
+    reply = chat(JUDGE, JUDGE_SYSTEM, user, schema=VERDICT)
+    result = json.loads(reply.text)`, hl: [5, 15] },
+  { t: "code", lbl: L2, title: "Code where it can, the judge where it must", demo: "step 2", file: "evals/graders.py",
+    caption: "Step 2 regrades step 1's saved answers: no new model calls. Grading is separate from running.",
+    code: `def with_judge(case, answer, rubric=RUBRIC_V2):
+    """Steps 2+: code for the enum fields, the judge for the sentence."""
+    grades = by_code(case, answer)
+    if answer is None:
+        return grades
+    verdict = judge(case["report"], answer.get("root_cause"), rubric)
+    grades["root_cause"] = verdict["verdict"] == "correct"     # unknown is not a pass
+    grades["verdict"] = verdict
+    return grades`, hl: [6, 7] },
+  { t: "table", lbl: L2, title: "Step 2: where the graders disagree", head: ["Case", "Answer", "Word check", "Judge"], rows: [
+    ["large · r09", "“Pool limit dropped to five after a bad configuration deploy.”", '<span class="hot">wrong</span>', "correct"],
+    ["small · r23", "“The cache layer (suspected, not confirmed).”", "wrong", '<span class="hot">unknown</span>'],
+  ], note: "r09: the word check punished a right answer, so large goes from 96% to 100%. r23: the judge says <b>the rubric doesn't cover this</b>. Who is right?" },
+
+  { t: "section", n: "03", title: "Check the judge", sub: "Before you trust it with every run" },
+  { t: "points", lbl: L2, title: "Calibrate against a person", points: [
+    ["Grade a sample by hand", "hand_labels.json: a person graded the small model's 24 root causes."],
+    ["Compare, case by case", "Agreement is the judge's score. Read every disagreement."],
+    ["A disagreement is a missing rule", "Write the rule into the rubric. Don't argue with the judge; tell it."],
+    ["Use another model as the judge", "A model grading its own answers is too kind to them."],
+  ] },
+  { t: "code", lbl: L2, title: "The rule calibration found", demo: "step 3", file: "evals/prompts.py · RUBRIC_V2",
+    caption: "The person said r23 is wrong: a suspected cause is not a stated cause. The rubric didn't say so. Now it does.",
+    code: `RUBRIC_V2 = RUBRIC_V1 + """
+
+A cause the report calls suspected, possible or not confirmed is NOT a stated
+cause. The correct answer is then null."""`, hl: [3, 4] },
+  { t: "table", lbl: L2, title: "Step 3: judge vs person", head: ["Rubric", "Agrees with the person", "Disagreement"], rows: [
+    ["v1", "23 of 24 (96%)", "r23: person incorrect, judge unknown"],
+    ["v2", '<span class="big">24 of 24</span>', "none"],
+  ], note: "From here on every step grades root_cause with <b>rubric v2</b>. The judge's grades are cached: the same answer is never paid for twice." },
+
+  // ---------------------------------------------------------------- lesson 3
+  { t: "section", n: "04", title: "Fix the prompt first", sub: "A low score doesn't say whose fault it is" },
+  { t: "statement", text: "Before you pay for a bigger model, read the cases the small one failed.",
+    sub: "A low score can come from the model or from the prompt. A bigger model costs more on every request, forever. A prompt fix costs one afternoon." },
+  { t: "table", lbl: L3, title: "Step 4: the failures have a pattern", demo: "step 4", head: ["Case", "Kind · field", "Expected", "The small model said"], rows: [
+    ["r21", "open · root_cause", "null", "“The certificate renewal planned for Friday.”"],
+    ["r22", "open · root_cause", "null", "“The checkout pods needed a restart.”"],
+    ["r23", "open · root_cause", "null", "“The cache layer (suspected, not confirmed).”"],
+    ["r24", "open · root_cause", "null", "“A queue backlog delayed SMS messages.”"],
+    ["r06", "typical · severity", "sev2", "sev1: the first one it saw"],
+  ], note: "4 of 5: <b>a cause for a report that has none.</b> A reassurance, a fix, a suspicion and a symptom, all turned into causes. The prompt said “or null” but never said when." },
+  { t: "points", lbl: L3, title: "Five ways to stop made-up answers", dense: true, points: [
+    ["Allow “I don't know”", "Say exactly when null is the right answer. We use this."],
+    ["Quote before answering", "Copy the supporting sentence first; no sentence, no answer. We use this."],
+    ["Cite and drop", "Point every claim at the document; remove the claims you can't point at."],
+    ["Verify in a second pass", "A second request checks the first answer against the source."],
+    ["Restrict outside knowledge", "Answer only from the document, never from what the model knows."],
+  ] },
+  { t: "code", lbl: L3, title: "Prompt v2: when null applies, and quote first", file: "evals/prompts.py · EXTRACT_V2",
+    caption: "Plus one line for r06: “If the severity changed, use the final one.” Diff EXTRACT_V1 and EXTRACT_V2: every new line answers a failure.",
+    code: `- root_cause: one sentence: the cause the report states.
+  Use null when the report states no cause: the cause is still being
+  investigated, only suspected, or not confirmed. A symptom, an action someone
+  took, or a sentence saying something is NOT expected to be a problem is not
+  a root cause.
+
+Before the JSON, copy the one sentence from the report that states the root
+cause, inside <source></source>. If there is no such sentence, write
+<source>none</source> and use null.`, hl: [2, 3, 7, 8, 9] },
+  { t: "code", lbl: L3, title: "The reply changed shape: so did the parser", file: "evals/harness.py",
+    caption: "The answer is no longer pure JSON: a quote comes first. Change the prompt, check the parser. A reply you can't parse counts as wrong.",
+    code: `def parse_answer(text):
+    """The JSON object in the reply. With prompt v2 a <source> quote comes first."""
+    text = text.split("</source>")[-1]
+    start, end = text.find("{"), text.rfind("}")
+    try:
+        return json.loads(text[start:end + 1])
+    except ValueError:
+        return None                                  # unparseable counts as wrong`, hl: [3] },
+  { t: "table", lbl: L3, title: "Step 5: all cases, all models, again", demo: "step 5", head: ["Model · prompt", "typical", "multi", "open", "overall", "per 1,000 done"], rows: [
+    ["small · v1", "93%", "100%", "20%", "79%", "$0.030"],
+    ["medium · v1", "100%", "100%", "100%", "100%", "$0.093"],
+    ["small · v2", "100%", "100%", "100%", '<span class="big">100%</span>', "$0.048"],
+    ["medium · v2", "100%", "100%", "100%", "100%", "$0.192"],
+    ["large · v2", "100%", "100%", "100%", "100%", "$0.963"],
+  ], note: "The prompt is longer, so every call costs more. Small with v2 is still half the price of medium with v1. <b>Pick: small · v2.</b> Right before, wrong now: none." },
+  { t: "points", lbl: L3, title: "When to buy a bigger model", points: [
+    ["Iterate the prompt while the score moves", "Read failures, find the pattern, change one thing, rerun everything."],
+    ["Then raise the reasoning effort", "If your model has the setting. It costs more tokens: compare it with the next model up."],
+    ["Then upgrade", "Only if you are still short of the floor."],
+    ["Check every column, every time", "A fix for one kind of case can break another. Run each setup twice."],
+  ] },
+
+  // ---------------------------------------------------------------- lesson 4
+  { t: "section", n: "05", title: "Evals in production", sub: "Keep it good after you ship" },
+  { t: "points", lbl: L4, title: "What changes after you ship", points: [
+    ["People edit the prompt", "A “simplification” can delete the line that fixed a whole kind of case."],
+    ["The inputs drift", "Real traffic slowly stops looking like your cases. Accuracy drops with no change on your side."],
+    ["So, four habits", "A smoke eval on every PR · it blocks the merge · the full suite as a batch · a nightly sample of live traffic."],
+  ] },
+  { t: "code", lbl: L4, title: "A smoke eval: small, fast, every PR", demo: "step 6", file: "evals/step6_smoke_eval.py",
+    caption: "8 cases that cover every kind of report, on the model we ship. Below 7 of 8, exit code 1: the CI check fails.",
+    code: `SMOKE = ["r01", "r06", "r09", "r12", "r15", "r17", "r21", "r23"]   # typical, multi_service, open
+THRESHOLD = 7 / 8
+SHIPPED = by_tier("small")                                        # the decision from step 5
+...
+    cases = [case for case in load_cases() if case["id"] in SMOKE]
+    result = grade(run("smoke", SHIPPED, prompt, cases), cases, with_judge)
+    s = stats(result)
+    passed = s["accuracy"] >= THRESHOLD
+    ...
+    sys.exit(0 if passed else 1)`, hl: [2, 10] },
+  { t: "code", lbl: L4, title: "In CI: run, comment, then fail", file: ".github/workflows/smoke-eval.yml",
+    caption: "Comment first, so the author sees which cases broke, then fail. Make smoke-eval a required check on main: the rule lives on the branch, not in this file.",
+    code: `- name: Run the smoke eval
+  id: smoke
+  continue-on-error: true           # comment first, fail after
+  working-directory: evals
+  env:
+    EVAL_MODE: live
+    OPENAI_API_KEY: \${{ secrets.OPENAI_API_KEY }}
+  run: python step6_smoke_eval.py
+
+- name: Comment the result on the PR
+  env:
+    GH_TOKEN: \${{ github.token }}
+  run: gh pr comment \${{ github.event.pull_request.number }} --body-file evals/smoke_comment.md
+
+- name: Fail if below the threshold
+  if: steps.smoke.outcome == 'failure'
+  run: exit 1`, hl: [3, 15] },
+  { t: "table", lbl: L4, title: "The PR that “simplified” the prompt", head: ["Branch", "Prompt", "Smoke eval", "Failed", "Merge"], rows: [
+    ["main", "v2", "8 of 8 (100%)", "—", "allowed"],
+    ["simplify-prompt", "v1: no null rule, no quote", '<span class="hot">5 of 8 (62%)</span>', "r06, r21, r23", '<span class="hot">blocked</span>'],
+  ], note: "Try it: <b>python step6_smoke_eval.py --prompt v1</b>, then echo $?. The lines that looked like clutter were the fix." },
+  { t: "code", lbl: L4, title: "The full suite as one batch", demo: "step 7", file: "evals/step7_batch.py",
+    caption: "Every case on every model: 72 requests in one file. A batch runs within 24 hours at half the price. Only the smoke eval needs an answer in a minute.",
+    code: `def requests(cases, prompt="v2"):
+    return [{"custom_id": f"{case['id']}__{model.tier}", "model": model.id,
+             "system": PROMPTS[prompt], "user": case["report"]}
+            for model in LADDER for case in cases]
+...
+    status, counts, replies = collect_batch(batch_id)
+    print(f"Status: {status}. Counts: {counts}")
+    if status != "completed":
+        return                         # check the counts before you score anything
+...
+            reply = replies.get(f"{case['id']}__{model.tier}")
+            if reply is None:
+                continue                                   # failed or expired: no answer`, hl: [2, 11] },
+  { t: "table", lbl: L4, title: "Step 7: the same answers, half the bill", head: ["Model", "Right", "Batch", "Standard"], rows: [
+    ["small", "24 / 24", "$0.00058", "$0.00115"],
+    ["medium", "24 / 24", "$0.00230", "$0.00460"],
+    ["large", "24 / 24", "$0.01156", "$0.02311"],
+  ], note: "Results come back in any order: <b>key them by custom_id, never by position.</b> A request that expired is not billed, and it has no answer: check the counts first." },
+  { t: "points", lbl: L4, title: "Drift: grade a sample of live traffic", dense: true, points: [
+    ["Sample 1–5% each night", "We take 5%: 20 of 400 reports."],
+    ["Grade with the judge", "Report + answer + a rubric for the whole answer. Live traffic has no expected answers, and doesn't need them. Still read some by hand."],
+    ["Alert on a real drop", "More than 2 standard deviations below the last 7 nights. Not on every bad night."],
+    ["Every wrong answer becomes a case", "A person writes its expected answer; it joins the suite."],
+  ], note: "1–5% and 2 standard deviations are starting points. <b>Tune them</b> to your volume and how noisy your nights are." },
+  { t: "code", lbl: L4, title: "Step 8: tonight against the last 7 nights", demo: "step 8", file: "evals/step8_drift.py",
+    caption: "Night 14: a new status-page tool files some reports with “Priority: P2” instead of “Severity: sev2”. Nothing in our prompt mentions it.",
+    code: `    recent = [h["score"] for h in history if h["night"] < n][-BASELINE_NIGHTS:]
+    mean, sd = statistics.mean(recent), statistics.stdev(recent)
+    score, wrong = score_night(n)
+
+    print(f"Last {len(recent)} nights: {', '.join(f'{s:.0%}' for s in recent)}")
+    print(f"Baseline {mean:.1%}, alert below {mean - 2 * sd:.1%} (2 standard deviations)")
+    print(f"Night {n}: {score:.0%}  " + ("ALERT: accuracy dropped" if score < mean - 2 * sd else "ok"))`, hl: [7] },
+  { t: "table", lbl: L4, title: "Night 14: the inputs changed, not the model", head: ["", "Score", ""], rows: [
+    ["Last 7 nights", "90–100%", "baseline 95.7%, alert below 86.7%"],
+    ["Night 14", '<span class="hot">55%</span>', "ALERT: 9 of 20 wrong"],
+    ["Why", "severity: “P2”", "not sev1, sev2 or sev3: the new tool's scale"],
+  ], note: "The fix is the loop again: <b>label the 9 reports, add them to the suite, fix the prompt</b> (P1 means sev1), smoke eval, ship." },
+
+  // ---------------------------------------------------------------- wrap up
+  { t: "week" },
+  { t: "code", lbl: "The loop", title: "Every change, the same loop", file: "the habit",
+    caption: "Model choice, prompt edits, new kinds of input: each one is a turn of this loop.",
+    code: `set the floor from the cost of a wrong answer
+  → run every model on the same cases, same prompt
+  → grade: code where you can, a calibrated judge where you must
+  → read the failures: is it the prompt or the model?
+  → fix the prompt, rerun everything, check every column
+  → pick the cheapest per completed task above the floor
+  → in production: smoke eval per PR · batch suite · nightly drift
+  → every wrong answer in production becomes a case` },
+  { t: "points", lbl: "Practice", title: "Exercises", dense: true, points: [
+    ["Live, twice", "Copy .env.example to .env. Run steps 1 and 5 twice each. Which numbers move between runs?"],
+    ["Your own floor", "Say 1 wrong answer in 50 is all your team can fix. What is the floor? Which model wins?"],
+    ["Fix the drift", "Add three P-scale reports to golden.json and one line to EXTRACT_V2. Does step 8 night 14 recover?"],
+    ["Judge the judge", "Grade the medium model's 24 root causes yourself. Does rubric v2 still agree with you?"],
+    ["A fifth guard", "Add a verification pass: a second call checks the root cause against the quote. Worth its cost?"],
+  ] },
+  { t: "checklist" },
+  { t: "end" },
+];
+
+const AGENDA = [
+  ["1", "Pick a model", "a floor, cost per completed task"],
+  ["2", "The judge", "a grader for each field"],
+  ["3", "Calibrate", "the judge against a person"],
+  ["4", "Read failures", "find the pattern"],
+  ["5", "Fix the prompt", "before a bigger model"],
+  ["6", "Smoke eval", "every PR, blocks the merge"],
+  ["7", "Batch", "the full suite, half price"],
+  ["8", "Drift", "a nightly sample of traffic"],
+];
+
+const CHECKLIST = [
+  "An accuracy floor, set from the cost of a wrong answer",
+  "20–50 labeled cases from real data, every kind in proportion",
+  "Code graders for exact fields, an LLM judge with a rubric for free text",
+  "A judge that never sees the expected answer, and may say unknown",
+  "The judge checked against a person's grades before you trust it",
+  "Models compared by cost per completed task, not per call",
+  "Failures read and grouped before the model is upgraded",
+  "A smoke eval on every PR, as a required check",
+  "The full suite as a batch, keyed by custom_id",
+  "A nightly sample of live traffic, and an alert at 2 standard deviations",
+];
+
+// ------------------------------------------------------------------ rendering
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const KW = /\b(def|return|for|in|if|elif|not|or|and|import|from|else|while|lambda|class|try|except|as)\b/g;
+
+function highlight(code, hl = []) {
+  return code.split("\n").map((line, i) => {
+    let body = line, comment = "";
+    const hash = line.search(/#(?![^"]*"[^"]*$)/);
+    if (hash >= 0) { body = line.slice(0, hash); comment = line.slice(hash); }
+    let html = esc(body).replace(/("""|"[^"]*"|'[^']*')/g, "\u0000$1\u0001");
+    html = html.split(/(\u0000[^\u0001]*\u0001)/).map((part) =>
+      part.startsWith("\u0000") ? `<span class="s">${part.slice(1, -1)}</span>` : part.replace(KW, '<span class="k">$1</span>')).join("");
+    if (comment) html += `<span class="c">${esc(comment)}</span>`;
+    return `<span class="l${hl.includes(i + 1) ? " hl" : ""}">${html}</span>`;
+  }).join("");
+}
+
+// shrink a code block just enough that its longest line fits (mono ≈ 0.6em per character)
+const codeSize = (code) => Math.min(17, Math.floor(720 / (0.61 * Math.max(...code.split("\n").map((l) => l.length))) * 10) / 10);
+const demoTag = (s) => s.demo ? `<span class="demo">▶ Run · ${s.demo}</span>` : "";
+const head = (s) => `<header class="hd"><div class="hd-row"><span class="lbl">${s.lbl}</span>${demoTag(s)}</div><h2>${s.title}</h2></header>`;
+const note = (s) => s.note ? `<p class="note">${s.note}</p>` : "";
+
+const RENDER = {
+  title: () => `<div class="title-body">
+      <span class="lbl gold">AI Engineering · Evals</span>
+      <h1>Choose the model from evidence.<br><span class="mark-gold">Then keep it honest.</span></h1>
+      <p class="title-sub">Four lessons, eight steps of plain Python: an accuracy floor, graders and an LLM judge, prompt fixes before model upgrades, and evals in production.</p>
+      <div class="title-by"><img src="logo-mark.png" alt=""><div><strong>Pouria Jahandideh</strong><span>pjsofts.github.io · AI Engineering</span></div></div>
+    </div>`,
+  statement: (s) => `<div class="mid"><p class="stmt">${s.text}</p>${s.sub ? `<p class="stmt-sub">${s.sub}</p>` : ""}</div>`,
+  section: (s) => `<div class="mid"><span class="sec-n">${s.n}</span><h2>${s.title}</h2><p>${s.sub}</p></div>`,
+  agenda: () => `<header class="hd"><span class="lbl">Today</span><h2>Four lessons, eight steps</h2></header>
+    <ol class="agenda two">${AGENDA.map(([n, t, l]) => `<li><span class="n">${n}</span><span><span class="t">${t}</span><span class="l">${l}</span></span></li>`).join("")}</ol>`,
+  points: (s) => `${head(s)}<ol class="pts${s.dense ? " dense" : ""}">${s.points.map(([b, r], i) =>
+      `<li><span class="n">${String(i + 1).padStart(2, "0")}</span><span><strong>${b}</strong> <span class="rest">${r}</span></span></li>`).join("")}</ol>${note(s)}`,
+  compare: (s) => `${head(s)}<div class="cmp">${s.cols.map((c) =>
+      `<div class="col ${c.tone}"><h3>${c.h}</h3><ul>${c.items.map((i) => `<li>${i}</li>`).join("")}</ul>${c.pre ? `<pre>${esc(c.pre)}</pre>` : ""}</div>`).join("")}</div>${note(s)}`,
+  code: (s) => `<div class="code-grid">
+      <div class="code-copy"><span class="lbl">${s.lbl}</span><h2>${s.title}</h2><p>${s.caption}</p>${demoTag(s)}</div>
+      <div class="term"><div class="term-bar"><i></i><i></i><i></i><span>${s.file}</span></div><div class="term-body" style="font-size:${codeSize(s.code)}px">${highlight(s.code, s.hl)}</div></div>
+    </div>`,
+  table: (s) => `${head(s)}<table class="tbl"><thead><tr>${s.head.map((h) => `<th>${h}</th>`).join("")}</tr></thead>
+    <tbody>${s.rows.map((r) => `<tr>${r.map((c, j) => j === 0 ? `<th>${c}</th>` : `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>${note(s)}`,
+  week: () => `<header class="hd"><span class="lbl">The lesson</span><h2>Eight steps on one slide</h2></header>
+    <div class="lane"><div class="lane-name">Decide<small>lessons 1–3</small></div>
+      <div class="box"><b>1 · Pick a model</b><span>floor 90%: medium wins, for now</span></div>
+      <div class="box llm"><b>2 · The judge</b><span>code for enums, a rubric for text</span></div>
+      <div class="box api"><b>3 · Calibrate</b><span>23/24 → a missing rule → 24/24</span></div>
+      <div class="box db"><b>4 · Read failures</b><span>4 of 5: a cause that isn't there</span></div></div>
+    <div class="lane"><div class="lane-name">Keep it<small>lessons 3–4</small></div>
+      <div class="box db"><b>5 · Fix the prompt</b><span>small · v2: 100%, the cheapest</span></div>
+      <div class="box"><b>6 · Smoke eval</b><span>8 cases per PR, 62% blocks it</span></div>
+      <div class="box llm"><b>7 · Batch</b><span>72 requests, half the price</span></div>
+      <div class="box api"><b>8 · Drift</b><span>night 14: “P2” is not a severity</span></div></div>
+    <p class="note"><b>We never bought a bigger model.</b> We measured, read the failures, and fixed the prompt. Then we made sure it stays fixed.</p>`,
+  checklist: () => `<header class="hd"><span class="lbl">You leave with</span><h2>Decisions from evidence, and a way to keep them true</h2></header>
+    <ul class="check">${CHECKLIST.map((c) => `<li>${c}</li>`).join("")}</ul>
+    <p class="note"><b>Not covered:</b> evals for agents (many calls, tools) and latency. Same habits, more moving parts.</p>`,
+  end: () => `<div class="mid end-body"><img src="logo.png" alt=""><h2>Questions?</h2>
+    <p>Bring this habit to every change: decide from the cases, then keep checking the cases are still true.</p></div>`,
+};
+
+const stage = document.getElementById("stage");
+const INK = new Set(["statement", "section", "end"]);
+SLIDES.forEach((s, i) => {
+  const a = document.createElement("article");
+  a.className = `slide s-${s.t}${INK.has(s.t) ? " ink" : ""}`;
+  a.innerHTML = RENDER[s.t](s) + (s.t === "title" ? "" :
+    `<footer class="sfoot"><span class="brand"><img src="logo-mark.png" alt="">Pouria Jahandideh · Introduction to evals</span><span>${String(i + 1).padStart(2, "0")} / ${SLIDES.length}</span></footer>`);
+  stage.append(a);
+});
+
+// ------------------------------------------------------------------ navigation
+const slides = [...document.querySelectorAll(".slide")];
+const N = slides.length;
+let cur = 0;
+const fromHash = () => { const n = parseInt(location.hash.slice(1), 10); return Number.isFinite(n) ? Math.min(Math.max(n - 1, 0), N - 1) : 0; };
+function show(i) {
+  cur = Math.min(Math.max(i, 0), N - 1);
+  slides.forEach((s, j) => s.classList.toggle("on", j === cur));
+  document.getElementById("counter").textContent = `${cur + 1} / ${N}`;
+  document.getElementById("bar").style.width = `${((cur + 1) / N) * 100}%`;
+  history.replaceState(null, "", `#${cur + 1}`);
+}
+function fit() { document.documentElement.style.setProperty("--s", Math.min(innerWidth / 1280, (innerHeight - 52) / 720)); }
+function full() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.(); }
+document.addEventListener("keydown", (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key;
+  if (["ArrowRight", "PageDown", " ", "l"].includes(k)) show(cur + 1);
+  else if (["ArrowLeft", "PageUp", "h"].includes(k)) show(cur - 1);
+  else if (k === "Home") show(0);
+  else if (k === "End") show(N - 1);
+  else if (k === "f" || k === "F") full();
+  else return;
+  e.preventDefault();
+});
+document.querySelectorAll("[data-go]").forEach((b) => b.onclick = () => {
+  const go = b.dataset.go;
+  if (go === "next") show(cur + 1); else if (go === "prev") show(cur - 1); else if (go === "full") full(); else window.print();
+});
+addEventListener("resize", fit);
+addEventListener("hashchange", () => show(fromHash()));
+fit();
+show(fromHash());
+</script>
+</body>
+</html>

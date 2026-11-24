@@ -2,3 +2,8 @@
 __pycache__/
 .venv/
 .data/
+node_modules/
+dist/
+wf/
+decisions/
+events.jsonl

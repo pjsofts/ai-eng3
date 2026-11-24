@@ -1,0 +1,39 @@
+# Runs the smoke eval (evals/step6_smoke_eval.py) on every pull request.
+# To block merges: Settings → Branches → a rule for main → "Require status
+# checks to pass" → select "smoke-eval". The rule lives on the branch, not here.
+name: smoke-eval
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write          # to comment the result on the PR
+
+jobs:
+  smoke-eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+
+      - name: Run the smoke eval
+        id: smoke
+        continue-on-error: true           # comment first, fail after
+        working-directory: evals
+        env:
+          EVAL_MODE: live
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python step6_smoke_eval.py
+
+      - name: Comment the result on the PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr comment ${{ github.event.pull_request.number }} --body-file evals/smoke_comment.md
+
+      - name: Fail if below the threshold
+        if: steps.smoke.outcome == 'failure'
+        run: exit 1

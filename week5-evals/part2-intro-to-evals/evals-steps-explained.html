@@ -1,0 +1,210 @@
+<title>Intro to Evals, Plainly</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one readable column; four lesson bands, each step a short story, an analogy and the numbers it printed. */
+:root {
+  --bg: #f5f7f6;
+  --surface: #ffffff;
+  --fg: #1b2629;
+  --muted: #5b686b;
+  --line: #dde4e2;
+  --accent: #0f7a6c;
+  --accent-soft: #e1f2ee;
+  --good: #1f7a4d;
+  --good-soft: #e3f3ea;
+  --bad: #b3392f;
+  --bad-soft: #f8e5e3;
+  --warn: #8a5a00;
+  --warn-soft: #f8efd9;
+  --display: "Space Grotesk", system-ui, sans-serif;
+  --body: "Inter", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101616; --surface: #172020; --fg: #e3ecea; --muted: #97a6a3; --line: #283433;
+    --accent: #5fd0bd; --accent-soft: #163029; --good: #5fc994; --good-soft: #15291f;
+    --bad: #f0857a; --bad-soft: #351b19; --warn: #e5b85c; --warn-soft: #2e2512; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101616; --surface: #172020; --fg: #e3ecea; --muted: #97a6a3; --line: #283433;
+  --accent: #5fd0bd; --accent-soft: #163029; --good: #5fc994; --good-soft: #15291f;
+  --bad: #f0857a; --bad-soft: #351b19; --warn: #e5b85c; --warn-soft: #2e2512; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 64px;
+}
+.wrap { max-width: 760px; margin: 0 auto; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: 2.1rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1rem; }
+p { margin: 0; }
+code { font-family: var(--mono); font-size: .86em; background: var(--accent-soft); color: var(--fg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.eyebrow { font-family: var(--mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+header { display: grid; gap: 14px; }
+header .lede { color: var(--muted); font-size: 1.08rem; max-width: 62ch; }
+
+.task { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: grid; gap: 12px; }
+.task pre { margin: 0; font-family: var(--mono); font-size: .84rem; background: var(--accent-soft); padding: 12px 14px; border-radius: 6px; overflow-x: auto; }
+.glossary { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; font-size: .94rem; }
+.glossary dt { font-weight: 600; }
+.glossary dd { margin: 0; color: var(--muted); }
+@media (max-width: 520px) { .glossary { grid-template-columns: 1fr; } .glossary dd { margin-bottom: 6px; } }
+
+.lesson { display: grid; gap: 4px; border-top: 1px solid var(--line); padding-top: 16px; }
+.lesson .eyebrow { color: var(--muted); }
+.lesson h2 { font-size: 1.15rem; color: var(--accent); }
+
+.step { display: grid; gap: 12px; }
+.step-head { display: flex; gap: 14px; align-items: baseline; }
+.num { font-family: var(--display); font-weight: 700; font-size: 2rem; color: var(--accent); line-height: 1; min-width: 1.2ch; }
+.file { font-family: var(--mono); font-size: .8rem; color: var(--muted); }
+.step p { max-width: 66ch; }
+.analogy { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-size: .95rem; }
+.analogy b { color: var(--accent); font-weight: 600; }
+.takeaway { font-weight: 600; }
+.takeaway::before { content: "Takeaway: "; color: var(--good); }
+
+.scores { overflow-x: auto; }
+.scores table { border-collapse: collapse; font-size: .85rem; font-variant-numeric: tabular-nums; min-width: 100%; }
+.scores th, .scores td { padding: 5px 10px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.scores th { font-weight: 500; color: var(--muted); font-family: var(--mono); font-size: .76rem; }
+.pill { display: inline-block; font-family: var(--mono); font-size: .8rem; padding: 1px 7px; border-radius: 999px; }
+.pill.g { background: var(--good-soft); color: var(--good); }
+.pill.w { background: var(--warn-soft); color: var(--warn); }
+.pill.b { background: var(--bad-soft); color: var(--bad); }
+
+footer { color: var(--muted); font-size: .9rem; border-top: 1px solid var(--line); padding-top: 16px; display: grid; gap: 8px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">AI Engineering · Introduction to evals</div>
+    <h1>Choose the model from evidence. Then keep it honest.</h1>
+    <p class="lede">Eight short steps in four lessons. You pick a model by measuring instead of guessing, learn to grade free-text answers, fix the prompt before paying for a bigger model, and keep it all working after you ship.</p>
+  </header>
+
+  <section class="task">
+    <h3>The job the model does</h3>
+    <p>It reads a short incident report and pulls out three fields:</p>
+    <pre>{"service": "checkout", "severity": "sev2", "root_cause": "A config push set the connection pool size to 5."}</pre>
+    <p><code>service</code> and <code>severity</code> have exactly one right value. <code>root_cause</code> is a sentence that can be written many ways, and it should be <code>null</code> when the report doesn't say what caused the problem.</p>
+    <dl class="glossary">
+      <dt>Case</dt><dd>One real report, plus the answer a person says is right. We have 24.</dd>
+      <dt>Grader</dt><dd>Whatever decides if the model's answer is right: a bit of code, another AI model (a “judge”), or a person.</dd>
+      <dt>Run</dt><dd>All 24 cases through one model with one prompt. You get scores and a bill.</dd>
+      <dt>Floor</dt><dd>The lowest score you'll accept. Ours is 90%.</dd>
+    </dl>
+  </section>
+
+  <div class="lesson"><div class="eyebrow">Lesson 1</div><h2>Which model?</h2></div>
+
+  <section class="step">
+    <div class="step-head"><span class="num">1</span><div><h2>Pick a model with numbers</h2><div class="file">step1_pick_a_model.py</div></div></div>
+    <p>First you decide how good is good enough. The review team can fix about 1 bad report in 10, so 90% must be right. Then you run three models (small, medium, large) on the same 24 cases with the same prompt.</p>
+    <p>You compare them by <b>cost per completed task</b>: the whole bill divided by the answers that were fully right. A cheap model that gets a lot wrong isn't really cheap.</p>
+    <div class="scores"><table>
+      <tr><th>model</th><th>right</th><th>cost per 1,000 right answers</th></tr>
+      <tr><td>small</td><td><span class="pill b">79%</span></td><td>$0.030</td></tr>
+      <tr><td>medium</td><td><span class="pill g">100%</span></td><td>$0.093</td></tr>
+      <tr><td>large</td><td><span class="pill g">96%</span></td><td>$0.487</td></tr>
+    </table></div>
+    <div class="analogy"><b>Like:</b> hiring. You don't hire the most expensive person. You hire the cheapest one who can actually do the job.</div>
+    <p class="takeaway">Small is cheapest but below the floor, so medium wins, for now.</p>
+  </section>
+
+  <div class="lesson"><div class="eyebrow">Lesson 2</div><h2>A minimum viable eval</h2></div>
+
+  <section class="step">
+    <div class="step-head"><span class="num">2</span><div><h2>A judge for the sentence</h2><div class="file">step2_judge.py</div></div></div>
+    <p>Checking <code>service</code> and <code>severity</code> is easy: plain code compares them exactly. But step 1 checked the root cause by counting shared words, and that's too crude. The same cause can be said in different words.</p>
+    <p>So another AI model becomes the judge. It reads the report, the answer and a written rubric (rules for “correct” and “incorrect”). It does <i>not</i> see our expected answer, so a right answer in other words isn't punished. It's also allowed to say “unknown” instead of guessing.</p>
+    <p>No new model calls: the judge regrades the answers step 1 saved. Two cases change:</p>
+    <div class="scores"><table>
+      <tr><th>case</th><th>word check</th><th>judge</th></tr>
+      <tr><td>large · “Pool limit dropped to five after a bad configuration deploy.”</td><td><span class="pill b">wrong</span></td><td><span class="pill g">correct</span></td></tr>
+      <tr><td>small · “The cache layer (suspected, not confirmed).”</td><td>wrong</td><td><span class="pill w">unknown</span></td></tr>
+    </table></div>
+    <div class="analogy"><b>Like:</b> a multiple-choice exam is marked by a machine, but an essay question needs a teacher with a marking guide.</div>
+    <p class="takeaway">Use code where there's one right answer, and a judge with a rubric where there isn't.</p>
+  </section>
+
+  <section class="step">
+    <div class="step-head"><span class="num">3</span><div><h2>Check the judge</h2><div class="file">step3_calibrate.py</div></div></div>
+    <p>Before trusting the judge, compare it with a person. Someone graded 24 answers by hand. The judge agreed on 23. The one disagreement: the report said the cause was “suspected, not confirmed”. The person said that's not a real cause. The rubric didn't say either way, so the judge said “unknown”.</p>
+    <p>The fix is one new line in the rubric: a suspected or unconfirmed cause doesn't count. Now the judge agrees on all 24.</p>
+    <div class="analogy"><b>Like:</b> a new teaching assistant. You check their first batch of marking. Where you disagree, you clarify the marking guide.</div>
+    <p class="takeaway">Every disagreement is a rule missing from the rubric. Write it down.</p>
+  </section>
+
+  <div class="lesson"><div class="eyebrow">Lesson 3</div><h2>Fix the prompt first</h2></div>
+
+  <section class="step">
+    <div class="step-head"><span class="num">4</span><div><h2>Read the failures</h2><div class="file">step4_read_failures.py</div></div></div>
+    <p>A low score doesn't tell you if the model is weak or the prompt is unclear. So you read the small model's 5 failures and group them.</p>
+    <p>4 of the 5 are the same mistake: the report states no cause, and the model invented one anyway. It turned a reassurance (“we don't expect the certificate renewal to cause problems”), a fix (“restarted the pods”), a suspicion and a symptom into causes. The 5th mixed up the severity after it was downgraded.</p>
+    <div class="analogy"><b>Like:</b> a doctor looks at the symptoms before prescribing. Buying a bigger model without reading the failures is guessing.</div>
+    <p class="takeaway">The old prompt said “or null” but never said <i>when</i> null applies.</p>
+  </section>
+
+  <section class="step">
+    <div class="step-head"><span class="num">5</span><div><h2>Fix the prompt, decide again</h2><div class="file">step5_fix_the_prompt.py</div></div></div>
+    <p>Prompt v2 adds three things: say exactly when the root cause is <code>null</code>; copy the sentence from the report that states the cause <i>before</i> answering (no sentence, no cause); and use the final severity if it changed. Then all 24 cases run again on all three models.</p>
+    <div class="scores"><table>
+      <tr><th>model · prompt</th><th>right</th><th>cost per 1,000 right answers</th></tr>
+      <tr><td>small · v1</td><td><span class="pill b">79%</span></td><td>$0.030</td></tr>
+      <tr><td>small · v2</td><td><span class="pill g">100%</span></td><td>$0.048</td></tr>
+      <tr><td>medium · v2</td><td><span class="pill g">100%</span></td><td>$0.192</td></tr>
+    </table></div>
+    <p>The longer prompt makes each call a bit pricier, but the small model now clears the floor, and it's the cheapest. No answer that was right before became wrong.</p>
+    <p class="takeaway">Fix the prompt before buying a bigger model. Here, the small model won.</p>
+  </section>
+
+  <div class="lesson"><div class="eyebrow">Lesson 4</div><h2>Evals in production</h2></div>
+
+  <section class="step">
+    <div class="step-head"><span class="num">6</span><div><h2>A quick test on every change</h2><div class="file">step6_smoke_eval.py</div></div></div>
+    <p>After you ship, people edit the prompt. A “cleanup” can delete the very line that fixed a problem. So every pull request runs a small, fast eval: 8 cases covering every kind of report. If fewer than 7 of 8 pass, the check fails and the change can't be merged.</p>
+    <div class="scores"><table>
+      <tr><th>change</th><th>smoke eval</th><th>merge</th></tr>
+      <tr><td>current prompt (v2)</td><td><span class="pill g">8 of 8</span></td><td>allowed</td></tr>
+      <tr><td>a PR that “simplifies” it back to v1</td><td><span class="pill b">5 of 8</span></td><td>blocked</td></tr>
+    </table></div>
+    <div class="analogy"><b>Like:</b> a smoke detector. It doesn't check everything, but it catches the fire before it spreads.</div>
+    <p class="takeaway">The lines that looked like clutter were the fix. Let the eval guard them.</p>
+  </section>
+
+  <section class="step">
+    <div class="step-head"><span class="num">7</span><div><h2>The full test, at half price</h2><div class="file">step7_batch.py</div></div></div>
+    <p>The full suite (every case on every model, 72 requests) doesn't need an answer in a minute. You send it as one batch. The provider finishes it within 24 hours at half the price.</p>
+    <p>The answers come back in any order, so each request carries its own label (like <code>r06__small</code>) and you match by that label, never by position.</p>
+    <div class="analogy"><b>Like:</b> sending laundry out overnight instead of express. Same result, cheaper, just later.</div>
+    <p class="takeaway">Small and fast for every change; full and cheap in batches.</p>
+  </section>
+
+  <section class="step">
+    <div class="step-head"><span class="num">8</span><div><h2>Notice when the world changes</h2><div class="file">step8_drift.py</div></div></div>
+    <p>Even if nobody touches the prompt, real inputs change over time. This is called drift. So every night you take a small random sample of real reports (5%, about 20), and the judge grades them. No expected answers needed.</p>
+    <p>You only alert on a real drop: much lower than the last 7 nights (more than 2 standard deviations below). On night 14 a new tool starts writing “Priority: P2” instead of “Severity: sev2”. The model copies “P2”, which isn't a valid severity.</p>
+    <div class="scores"><table>
+      <tr><th>nights</th><th>score</th></tr>
+      <tr><td>last 7 nights</td><td>90–100% (alert below 86.7%)</td></tr>
+      <tr><td>night 14</td><td><span class="pill b">55%</span> · alert</td></tr>
+    </table></div>
+    <div class="analogy"><b>Like:</b> a regular health check-up. You're not sick today, but you'd want to know early when something starts slipping.</div>
+    <p class="takeaway">Every wrong answer from production becomes a new test case, and the loop starts again.</p>
+  </section>
+
+  <footer>
+    <p><b>About the numbers.</b> These come from Replay mode, which needs no API key: the model and judge answers are scripted, but the grading, costs and decisions are computed for real. In Live mode, with real models, your numbers will differ, and they'll vary from run to run. Run each setup twice before you trust it.</p>
+    <p>Run it: <code>cd evals-intro/evals && python step1_pick_a_model.py</code>, then each step in order. Slides: <code>evals-intro/slides/index.html</code>.</p>
+  </footer>
+</div>

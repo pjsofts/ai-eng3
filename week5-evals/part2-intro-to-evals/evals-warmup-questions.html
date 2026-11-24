@@ -1,0 +1,265 @@
+<title>Evals Warm-up Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: one reading column of question cards; the answer folds open under each question, the way you'd ask it in class. */
+:root {
+  --paper: #f5f6f3;
+  --card: #ffffff;
+  --ink: #1d2a44;
+  --ink-soft: #4b5568;
+  --accent: #d42f26;
+  --accent-wash: #fbe6e4;
+  --gold-wash: #fdf3c4;
+  --gold-ink: #7a4f1f;
+  --teal: #0f8f80;
+  --teal-wash: #ddf3ef;
+  --rule: rgba(29, 42, 68, 0.12);
+  --display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #111827; --card: #1a2335; --ink: #e8ebf1; --ink-soft: #a6afc0;
+    --accent: #ff6a5f; --accent-wash: #3a1e22; --gold-wash: #3a3218; --gold-ink: #f1d27a;
+    --teal: #4fd1bd; --teal-wash: #15332f; --rule: rgba(232, 235, 241, 0.12);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #111827; --card: #1a2335; --ink: #e8ebf1; --ink-soft: #a6afc0;
+  --accent: #ff6a5f; --accent-wash: #3a1e22; --gold-wash: #3a3218; --gold-ink: #f1d27a;
+  --teal: #4fd1bd; --teal-wash: #15332f; --rule: rgba(232, 235, 241, 0.12);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--sans); font-size: 16px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 64px;
+}
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+header { display: flex; flex-direction: column; gap: 10px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--display); font-size: clamp(30px, 5vw, 42px); line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.lede { margin: 0; color: var(--ink-soft); max-width: 62ch; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding-block: 12px; }
+.legend { display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px; color: var(--ink-soft); align-items: center; }
+.chip { font-family: var(--mono); font-size: 11.5px; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.chip.intro { background: var(--teal-wash); color: var(--teal); }
+.chip.w5 { background: var(--accent-wash); color: var(--accent); }
+button {
+  font: 600 14px var(--sans); color: var(--ink); background: var(--card);
+  border: 1px solid var(--rule); border-radius: 8px; padding: 8px 14px; cursor: pointer;
+}
+button:hover { border-color: var(--accent); }
+button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+ol.qs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+details { background: var(--card); border: 1px solid var(--rule); border-radius: 12px; }
+summary { list-style: none; cursor: pointer; padding: 18px 20px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: start; }
+summary::-webkit-details-marker { display: none; }
+.num { font-family: var(--display); font-weight: 700; font-size: 22px; color: var(--accent); line-height: 1.2; font-variant-numeric: tabular-nums; min-width: 1.6em; }
+.q { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.q h2 { font-family: var(--display); font-weight: 600; font-size: 19px; line-height: 1.3; margin: 0; text-wrap: balance; }
+.q .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.toggle { font-size: 13px; color: var(--ink-soft); white-space: nowrap; padding-top: 3px; }
+.toggle::after { content: "Show answer"; }
+details[open] .toggle::after { content: "Hide"; }
+
+.a { padding: 0 20px 20px calc(20px + 1.6em + 14px); display: flex; flex-direction: column; gap: 12px; }
+.short { margin: 0; font-weight: 600; }
+.a ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 4px; }
+.lesson { background: var(--gold-wash); color: var(--ink); border-radius: 8px; padding: 12px 14px; font-size: 14.5px; }
+.lesson b { font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--gold-ink); display: block; margin-bottom: 2px; }
+code { font-family: var(--mono); font-size: .88em; background: var(--paper); padding: 1px 5px; border-radius: 4px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 4px 14px 4px 0; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { font-weight: 600; color: var(--ink-soft); font-size: 12.5px; }
+footer { color: var(--ink-soft); font-size: 13.5px; border-top: 1px solid var(--rule); padding-top: 16px; }
+@media (max-width: 520px) {
+  summary { grid-template-columns: auto 1fr; }
+  .toggle { grid-column: 2; padding-top: 0; }
+  .a { padding-left: 20px; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">AI Engineering · Evals warm-up</span>
+    <h1>Ten questions before we start</h1>
+    <p class="lede">Ask each question, let the room answer, then open the answer. They read like interview questions on purpose: every one has come up in real AI-engineering interviews, and each answer points back to the step in the code where we saw it happen.</p>
+  </header>
+
+  <div class="toolbar">
+    <div class="legend">
+      <span class="chip intro">Intro to evals</span> incident-report extractor
+      <span class="chip w5">Week 5</span> diagram agent
+    </div>
+    <button id="allBtn" type="button">Show all answers</button>
+  </div>
+
+  <ol class="qs">
+    <li><details>
+      <summary><span class="num">1</span><span class="q"><h2>Your agent replies “Done!” How do you know it actually did the job?</h2><span class="tags"><span class="chip w5">Week 5 · step 0, 1</span></span></span><span class="toggle"></span></summary>
+      <div class="a">
+        <p class="short">You don't, until you look at the output. What the agent says about its work is not evidence.</p>
+        <ul>
+          <li>Check the artifact the user receives (the canvas, the JSON, the file), not the chat message.</li>
+          <li>Start by reading every result of a small fixed set of cases yourself. That gives you a baseline and shows you what to measure.</li>
+          <li>Human 1–5 grading works for ten cases. It doesn't scale, and two people will score the same output differently.</li>
+        </ul>
+        <div class="lesson"><b>In the lesson</b>The first diagram agent said “Done!” for “User → API → Database”. The canvas had three empty boxes and arrows attached to nothing.</div>
+      </div>
+    </details></li>
+
+    <li><details>
+      <summary><span class="num">2</span><span class="q"><h2>You have three models to choose from. How do you pick one?</h2><span class="tags"><span class="chip intro">Intro · step 1</span></span></span><span class="toggle"></span></summary>
+      <div class="a">
+        <p class="short">Set the accuracy floor first, then pick the cheapest model that clears it, measured as cost per completed task.</p>
+        <ul>
+          <li>The floor comes from the business: here the review team can fix about 1 bad report in 10, so the floor is 90%.</li>
+          <li>Cost per completed task = the whole bill ÷ answers that were fully right. A cheap model that is often wrong isn't cheap.</li>
+          <li>Run each setup more than once. Live numbers vary from run to run, so trust the direction of a change more than the exact digits.</li>
+        </ul>
+        <div class="lesson"><b>In the lesson</b>
+          <div class="tbl"><table>
+            <tr><th>model</th><th>right</th><th>cost per 1,000 right answers</th></tr>
+            <tr><td>small</td><td>79%</td><td>$0.030 (below the floor)</td></tr>
+            <tr><td>medium</td><td>100%</td><td>$0.093 (wins, for now)</td></tr>
+            <tr><td>large</td><td>96%</td><td>$0.487</td></tr>
+          </table></div>
+        </div>
+      </div>
+    </details></li>
+
+    <li><details>
+      <summary><span class="num">3</span><span class="q"><h2>When do you grade with code, when with an LLM judge, and when with a person?</h2><span class="tags"><span class="chip intro">Intro · step 2</span><span class="chip w5">Week 5 · step 2</span></span></span><span class="toggle"></span></summary>
+      <div class="a">
+        <p class="short">Code where there is one right answer, an LLM judge with a written rubric where there isn't, and a person to set the standard and check the judge.</p>
+        <ul>
+          <li>Code scorers are fast, free and give the same result every time: exact match on <code>service</code> and <code>severity</code>, or Week 5's <code>schema</code>, <code>structure</code> and <code>bound_arrows</code>.</li>
+          <li>Word overlap is too crude for free text. The same root cause can be written many ways.</li>
+          <li>The judge reads the input, the answer and the rubric. It doesn't see our expected answer, so a correct answer in other words isn't punished, and it may say “unknown” instead of guessing.</li>
+        </ul>
+        <div class="lesson"><b>In the lesson</b>“Pool limit dropped to five after a bad configuration deploy.” The word check said wrong. The judge said right, and it was.</div>
+      </div>
+    </details></li>
+
+    <li><details>
+      <summary><span class="num">4</span><span class="q"><h2>Why should anyone trust your LLM judge?</h2><span class="tags"><span class="chip intro">Intro · step 3</span></span></span><span class="toggle"></span></summary>
+      <div class="a">
+        <p class="short">Only after you calibrate it: grade a set of answers by hand, compare, and turn every disagreement into a rubric rule.</p>
+        <ul>
+          <li>The judge is a model too. It needs its own eval before it can grade anything else.</li>
+          <li>A disagreement usually isn't the judge being bad. It shows a rule the rubric never wrote down.</li>
+          <li>Cache the judge's grades so grading the same answer twice costs nothing.</li>
+        </ul>
+        <div class="lesson"><b>In the lesson</b>The judge agreed with a person on 23 of 24. The miss was a cause the report called “suspected, not confirmed”. One new rubric line (an unconfirmed cause doesn't count) brought it to 24 of 24.</div>
+      </div>
+    </details></li>
+
+    <li><details>
+      <summary><span class="num">5</span><span class="q"><h2>The cheap model scores below the bar. Do you switch to a bigger one?</h2><span class="tags"><span class="chip intro">Intro · steps 4, 5</span><span class="chip w5">Week 5 · step 3</span></span></span><span class="toggle"></span></summary>
+      <div class="a">
+        <p class="short">Not before you've read the failures. A low score doesn't say whether the model is weak or the prompt is unclear.</p>
+        <ul>
+          <li>Group the failures by kind and by field. One pattern usually explains most of them.</li>
+          <li>Fix the prompt or the context, rerun every case on every model, and decide again. Check that nothing that was right became wrong.</li>
+          <li>Better instructions and better context often beat a bigger model.</li>
+        </ul>
+        <div class="lesson"><b>In the lesson</b>4 of the small model's 5 failures invented a root cause for a report that stated none. The prompt said “or null” but never said when. Prompt v2 took small from 79% to 100% at $0.048 per 1,000 right answers, the cheapest option. In Week 5, a real system prompt plus the canvas as text took preservation from 0% to 100% with the same model.</div>
+      </div>
+    </details></li>
+
+    <li><details>
+      <summary><span class="num">6</span><span class="q"><h2>What goes into a golden dataset, and can the dataset itself be wrong?</h2><span class="tags"><span class="chip intro">Intro · datasets</span><span class="chip w5">Week 5 · steps 1, 4, 7</span></span></span><span class="toggle"></span></summary>
+      <div class="a">
+        <p class="short">A fixed, versioned set of real-looking inputs with what a good answer looks like, covering every kind of case. And yes, it can be wrong.</p>
+        <ul>
+          <li>Cover the kinds, not just the happy path: 14 typical, 5 multi-service and 5 open (no stated cause) in the intro; “create” and “modify” requests in Week 5.</li>
+          <li>Freeze it so experiments stay comparable. Add a new version when you need new cases.</li>
+          <li>Inputs must look like production: Week 5's <code>golden_2.json</code> draws its starting diagrams the way the app draws them and adds hard layout cases.</li>
+        </ul>
+        <div class="lesson"><b>In the lesson</b>In Week 5, connectivity dropped because one arrow in the dataset's own starting diagram was never attached. The test data was the bug.</div>
+      </div>
+    </details></li>
+
+    <li><details>
+      <summary><span class="num">7</span><span class="q"><h2>You ship a change you believe is better, and a score goes down. What now?</h2><span class="tags"><span class="chip w5">Week 5 · step 4</span></span></span><span class="toggle"></span></summary>
+      <div class="a">
+        <p class="short">Open the cases that dropped and read them before you revert anything. A drop is a reason to look closer.</p>
+        <ul>
+          <li>Compare against the previous experiment case by case, not only the average.</li>
+          <li>The cause can be the change, the scorer, or the data.</li>
+          <li>Scorers should change with the design: when the agent got a “look first” tool, <code>tool_choice</code> replaced <code>preservation</code>.</li>
+        </ul>
+        <div class="lesson"><b>In the lesson</b>Splitting one big tool into four small ones (query, add, update, remove) made connectivity fall to 85%. The modify-add row showed why: the dataset's arrow, not the agent.</div>
+      </div>
+    </details></li>
+
+    <li><details>
+      <summary><span class="num">8</span><span class="q"><h2>Your eval says 100%, but users see a broken product. What happened?</h2><span class="tags"><span class="chip w5">Week 5 · steps 5, 6, 7</span></span></span><span class="toggle"></span></summary>
+      <div class="a">
+        <p class="short">The eval is measuring something other than what users get. When the eval and the product disagree, suspect the eval first.</p>
+        <ul>
+          <li>Score the output through the same code path the user's output goes through.</li>
+          <li>Let the agent and the eval share one definition of “correct”, so they can't disagree.</li>
+          <li>A number that doesn't move can still be progress, if it is now true.</li>
+        </ul>
+        <div class="lesson"><b>In the lesson</b>The eval scored the elements the agent sent (<code>containerId</code>, <code>startBinding</code>). Excalidraw reads <code>label</code>, <code>start</code>, <code>end</code> and silently ignored them: 100% in the eval, near 0% on screen from the same run. The fix made the eval run the app's own <code>draw()</code>. Later, one <code>find_overlaps()</code> served both the agent's tool result and the <code>no_overlaps</code> scorer.</div>
+      </div>
+    </details></li>
+
+    <li><details>
+      <summary><span class="num">9</span><span class="q"><h2>How do you stop a teammate's prompt “cleanup” from breaking production?</h2><span class="tags"><span class="chip intro">Intro · steps 6, 7</span></span></span><span class="toggle"></span></summary>
+      <div class="a">
+        <p class="short">A small, fast smoke eval runs on every pull request and blocks the merge below a threshold. The full suite runs as a cheap batch.</p>
+        <ul>
+          <li>Smoke eval: a few cases that cover every kind of input, a threshold, and exit code 1 so CI fails the check.</li>
+          <li>Full suite: it doesn't need an answer in a minute, so send it through a Batch API at about half the price, within 24 hours.</li>
+          <li>Batch results come back in any order. Match them by <code>custom_id</code> (like <code>r06__small</code>), never by position.</li>
+        </ul>
+        <div class="lesson"><b>In the lesson</b>8 cases, pass needs 7 of 8. The current prompt scored 8 of 8. A PR that “simplified” it back to v1 scored 5 of 8 and was blocked. The lines that looked like clutter were the fix.</div>
+      </div>
+    </details></li>
+
+    <li><details>
+      <summary><span class="num">10</span><span class="q"><h2>Nobody changed the prompt, but quality is slipping. How would you notice, and what do you do?</h2><span class="tags"><span class="chip intro">Intro · step 8</span></span></span><span class="toggle"></span></summary>
+      <div class="a">
+        <p class="short">That's drift: real inputs change over time. Judge a small random sample of production traffic every night and alert only on a real drop.</p>
+        <ul>
+          <li>Sample about 5% of real traffic. The judge grades it, so no expected answers are needed.</li>
+          <li>Alert when a night is more than 2 standard deviations below the last 7 nights, so normal noise doesn't page anyone.</li>
+          <li>Every production failure becomes a new golden case, and the loop starts again.</li>
+        </ul>
+        <div class="lesson"><b>In the lesson</b>The last 7 nights scored 90–100% (alert below 86.7%). On night 14 a new tool wrote “Priority: P2” instead of “Severity: sev2”. The model copied “P2”, which isn't a valid severity, and the score fell to 55%.</div>
+      </div>
+    </details></li>
+  </ol>
+
+  <footer>Numbers come from Replay mode in the course code: the model replies are scripted, but every grader, cost and decision is computed for real. With live models your numbers will differ from run to run.</footer>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('allBtn');
+  var items = Array.prototype.slice.call(document.querySelectorAll('details'));
+  function sync() {
+    var allOpen = items.every(function (d) { return d.open; });
+    btn.textContent = allOpen ? 'Hide all answers' : 'Show all answers';
+  }
+  btn.addEventListener('click', function () {
+    var open = !items.every(function (d) { return d.open; });
+    items.forEach(function (d) { d.open = open; });
+    sync();
+  });
+  items.forEach(function (d) { d.addEventListener('toggle', sync); });
+})();
+</script>

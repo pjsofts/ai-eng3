@@ -1,0 +1,242 @@
+[
+ {
+  "id": "r01",
+  "category": "typical",
+  "report": "# INC-2101 · checkout\nSeverity: sev2\nFrom 09:12 to 09:47 UTC, 18% of checkout requests failed with TLS errors.\nRoot cause: the TLS certificate on the checkout load balancer expired. The renewal job had been disabled in March.\nFix: renewed the certificate and turned the renewal job back on.\n",
+  "expected": {
+   "service": "checkout",
+   "severity": "sev2",
+   "root_cause": "The TLS certificate on the checkout load balancer expired."
+  }
+ },
+ {
+  "id": "r02",
+  "category": "typical",
+  "report": "# INC-2102 · payments\nSeverity: sev1\nNo card payments went through for 26 minutes during the evening peak.\nA database migration took a lock on the transactions table and held it until the migration finished.\nWe stopped the migration, the lock was released and payments recovered at 19:58.\n",
+  "expected": {
+   "service": "payments",
+   "severity": "sev1",
+   "root_cause": "A database migration locked the transactions table."
+  }
+ },
+ {
+  "id": "r03",
+  "category": "typical",
+  "report": "# INC-2103 · search\nSeverity: sev3\nSearch results were up to six hours stale on Tuesday morning. No errors were shown to customers.\nThe nightly index rebuild ran out of disk space and stopped halfway, so the old index stayed live.\nDisk was expanded and the rebuild re-run.\n",
+  "expected": {
+   "service": "search",
+   "severity": "sev3",
+   "root_cause": "The nightly index rebuild ran out of disk space."
+  }
+ },
+ {
+  "id": "r04",
+  "category": "typical",
+  "report": "# INC-2104 · auth\nSeverity: sev1\nEvery user was logged out at 14:03 and nobody could log back in for 41 minutes.\nRoot cause: deploy 7.12 changed the key used to sign session tokens, so all existing tokens became invalid.\nRolled back to 7.11.\n",
+  "expected": {
+   "service": "auth",
+   "severity": "sev1",
+   "root_cause": "A deploy changed the key used to sign session tokens."
+  }
+ },
+ {
+  "id": "r05",
+  "category": "typical",
+  "report": "# INC-2105 · notifications\nSeverity: sev3\nPassword reset emails were delayed by up to 40 minutes.\nOur email provider rate-limited the sending account after a marketing campaign used the same account.\nMarketing now sends from a separate account.\n",
+  "expected": {
+   "service": "notifications",
+   "severity": "sev3",
+   "root_cause": "The email provider rate-limited the sending account after a marketing campaign used it."
+  }
+ },
+ {
+  "id": "r06",
+  "category": "typical",
+  "report": "# INC-2106 · inventory\nDeclared sev1 at 08:20. Downgraded to sev2 at 08:35 once we saw that orders were still being accepted.\nStock counts were wrong on product pages for about an hour.\nRoot cause: after the Redis node restarted, thousands of requests rebuilt the same cache keys at once (a cache stampede) and the stock service timed out.\n",
+  "expected": {
+   "service": "inventory",
+   "severity": "sev2",
+   "root_cause": "A cache stampede after the Redis node restarted."
+  }
+ },
+ {
+  "id": "r07",
+  "category": "typical",
+  "report": "# INC-2107 · shipping\nSeverity: sev2\nNo shipping labels could be printed for 2 hours.\nThe carrier changed the response format of its label API without notice, and our parser rejected every response.\nPatched the parser; asked the carrier for change notices.\n",
+  "expected": {
+   "service": "shipping",
+   "severity": "sev2",
+   "root_cause": "The carrier changed the response format of its label API."
+  }
+ },
+ {
+  "id": "r08",
+  "category": "typical",
+  "report": "# INC-2108 · profile\nSeverity: sev3\nProfile pages were slow (p95 4s) for most of Thursday.\nCause: an image resize job for old avatars filled the shared worker queue, so profile requests waited behind it.\nThe resize job now runs on its own queue.\n",
+  "expected": {
+   "service": "profile",
+   "severity": "sev3",
+   "root_cause": "An image resize job filled the shared worker queue."
+  }
+ },
+ {
+  "id": "r09",
+  "category": "typical",
+  "report": "# INC-2109 · checkout\nSeverity: sev2\nCheckout was slow and 7% of orders timed out between 11:00 and 11:30.\nRoot cause: a config push set the database connection pool size for checkout to 5 instead of 50.\nReverted the config and added a check on pool size to the config linter.\n",
+  "expected": {
+   "service": "checkout",
+   "severity": "sev2",
+   "root_cause": "A config push set the database connection pool size to 5."
+  }
+ },
+ {
+  "id": "r10",
+  "category": "typical",
+  "report": "# INC-2110 · payments\nSeverity: sev2\nRefund requests failed intermittently for 50 minutes.\nA client with a misconfigured retry policy retried every failed call immediately, which doubled the request rate to the refunds API.\nThe client was fixed and rate limits were added per client.\n",
+  "expected": {
+   "service": "payments",
+   "severity": "sev2",
+   "root_cause": "A misconfigured client's retries doubled the request rate."
+  }
+ },
+ {
+  "id": "r11",
+  "category": "typical",
+  "report": "# INC-2111 · search\nSeverity: sev2\nSearch nodes restarted every few hours over the weekend and queries failed while they did.\nRoot cause: a memory leak in the query parser introduced in version 3.4.\nRolled back to 3.3; the leak is fixed in 3.5.\n",
+  "expected": {
+   "service": "search",
+   "severity": "sev2",
+   "root_cause": "A memory leak in the query parser in version 3.4."
+  }
+ },
+ {
+  "id": "r12",
+  "category": "typical",
+  "report": "# INC-2112 · auth\nSeverity: sev3\nAbout 2% of logins failed with \"token expired\" right after login.\nTwo hosts had clock skew of more than 5 minutes after an NTP outage, so fresh tokens looked expired.\n",
+  "expected": {
+   "service": "auth",
+   "severity": "sev3",
+   "root_cause": "Clock skew on two hosts made new tokens look expired."
+  }
+ },
+ {
+  "id": "r13",
+  "category": "typical",
+  "report": "# INC-2113 · notifications\nSeverity: sev2\nPush notifications were not delivered for 3 hours.\nA DNS change pointed the push gateway at the old cluster, which had been shut down.\nDNS was corrected.\n",
+  "expected": {
+   "service": "notifications",
+   "severity": "sev2",
+   "root_cause": "A DNS change pointed the push gateway at the old, shut-down cluster."
+  }
+ },
+ {
+  "id": "r14",
+  "category": "typical",
+  "report": "# INC-2114 · inventory\nSeverity: sev3\nSome stock counts were doubled on Sunday morning.\nThe stock import cron job ran twice when the clocks changed for daylight saving time.\nThe job now runs in UTC.\n",
+  "expected": {
+   "service": "inventory",
+   "severity": "sev3",
+   "root_cause": "A cron job ran twice when the clocks changed for daylight saving time."
+  }
+ },
+ {
+  "id": "r15",
+  "category": "multi_service",
+  "report": "# INC-2115 · reported by the payments on-call\nSeverity: sev2\nCheckout returned errors for 15% of carts for 20 minutes. Payments and auth were paged and confirmed they were healthy throughout.\nThe incident was in checkout: a feature flag sent all traffic to the new cart service before it had been scaled up.\n",
+  "expected": {
+   "service": "checkout",
+   "severity": "sev2",
+   "root_cause": "A feature flag sent all traffic to the new cart service before it was scaled up."
+  }
+ },
+ {
+  "id": "r16",
+  "category": "multi_service",
+  "report": "# INC-2116 · search, with inventory and profile on the call\nSeverity: sev2\nSearch returned empty results for a third of queries for 35 minutes.\nInventory's stock feed was 10 minutes late that morning, but that is normal and did not affect search.\nRoot cause: two search nodes were drained for maintenance and no replacements were added.\n",
+  "expected": {
+   "service": "search",
+   "severity": "sev2",
+   "root_cause": "Two search nodes were drained for maintenance without replacements."
+  }
+ },
+ {
+  "id": "r17",
+  "category": "multi_service",
+  "report": "# INC-2117 · shipping\nSeverity: sev2\nLabels printed on Monday carried the wrong delivery date. Notifications then sent those wrong dates to customers by email, but the notifications service itself worked as designed.\nCause: a timezone bug in shipping's label generation.\n",
+  "expected": {
+   "service": "shipping",
+   "severity": "sev2",
+   "root_cause": "A timezone bug in label generation."
+  }
+ },
+ {
+  "id": "r18",
+  "category": "multi_service",
+  "report": "# INC-2118 · payments\nSeverity: sev1\nEvery payment was declined for 12 minutes. Checkout and auth showed errors too, but only because they wait on payments.\nThe API key for our fraud-check vendor had expired, so every fraud check failed and payments declined by default.\n",
+  "expected": {
+   "service": "payments",
+   "severity": "sev1",
+   "root_cause": "The fraud-check vendor's API key had expired."
+  }
+ },
+ {
+  "id": "r19",
+  "category": "multi_service",
+  "report": "# INC-2119 · profile (avatar service involved)\nSeverity: sev3\nAvatars were missing on profile pages for an hour.\nA schema change in the profile database removed a column that the avatar service still read. The avatar service had no bug of its own.\n",
+  "expected": {
+   "service": "profile",
+   "severity": "sev3",
+   "root_cause": "A schema change removed a column the avatar service still read."
+  }
+ },
+ {
+  "id": "r20",
+  "category": "open",
+  "report": "# INC-2120 · auth\nSeverity: sev2\nLogin latency rose to 3 seconds for 25 minutes, then recovered by itself.\nRoot cause: still under investigation.\n",
+  "expected": {
+   "service": "auth",
+   "severity": "sev2",
+   "root_cause": null
+  }
+ },
+ {
+  "id": "r21",
+  "category": "open",
+  "report": "# INC-2121 · payments\nSeverity: sev1\nCard payments failed for 9 minutes at 02:10. They recovered before anyone made a change.\nWe are still looking for the cause. We do not expect the certificate renewal planned for Friday to cause any problems.\n",
+  "expected": {
+   "service": "payments",
+   "severity": "sev1",
+   "root_cause": null
+  }
+ },
+ {
+  "id": "r22",
+  "category": "open",
+  "report": "# INC-2122 · checkout\nSeverity: sev3\nTimeline:\n- 16:02 error rate up to 4%\n- 16:10 restarted the checkout pods\n- 16:14 error rate back to normal\nThe cause has not been found yet.\n",
+  "expected": {
+   "service": "checkout",
+   "severity": "sev3",
+   "root_cause": null
+  }
+ },
+ {
+  "id": "r23",
+  "category": "open",
+  "report": "# INC-2123 · search\nSeverity: sev2\nSearch was slow for 40 minutes. The cache layer is suspected, but this has not been confirmed.\nA follow-up review is scheduled.\n",
+  "expected": {
+   "service": "search",
+   "severity": "sev2",
+   "root_cause": null
+  }
+ },
+ {
+  "id": "r24",
+  "category": "open",
+  "report": "# INC-2124 · notifications\nSeverity: sev3\nA queue backlog delayed SMS messages for 30 minutes, then cleared on its own.\nThe team will hold a review next week to find out why the backlog formed.\n",
+  "expected": {
+   "service": "notifications",
+   "severity": "sev3",
+   "root_cause": null
+  }
+ }
+]
