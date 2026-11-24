@@ -1,0 +1,5 @@
+{
+  "app": "pocket-notes",
+  "port": 8080,
+  "debug": true
+}

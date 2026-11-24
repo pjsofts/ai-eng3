@@ -1,0 +1,4 @@
+- write the README
+- URGENT: the login page crashes when the password is empty
+- add tags to notes
+- clean up old test files

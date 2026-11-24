@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 1 · Your first agent — Slides</title>
+<link rel="icon" href="logo-mark.png">
+<style>
+@font-face { font-family: "Space Grotesk"; font-weight: 400 700; font-display: swap; src: url("fonts/space-grotesk.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 100 900; font-display: swap; src: url("fonts/inter.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 100 800; font-display: swap; src: url("fonts/jetbrains-mono.woff2") format("woff2"); }
+
+/* The same brand as the course site: the studio. Brick white, denim navy, chair red, sticky-note yellow. */
+:root {
+  --paper: #f5f6f3; --paper-2: #e6e9e8; --card: #ffffff;
+  --ink: #1d2a44; --ink-soft: #4b5568;
+  --violet: #d42f26; --violet-deep: #a8231c; --violet-wash: #fbe6e4;
+  --gold: #f6d64a; --gold-deep: #8a5a26; --gold-wash: #fdf3c4;
+  --teal: #0f8f80; --teal-wash: #ddf3ef;
+  --rose: #c2416b;
+  --term-green: #7ddca4;
+  --rule: rgba(29, 42, 68, 0.12);
+  --display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { overflow: hidden; background: #0b0918; font-family: var(--sans); color: var(--ink); }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: -0.03em; line-height: 1.02; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+code, .mono { font-family: var(--mono); }
+
+.viewport { position: fixed; inset: 0 0 52px 0; display: grid; place-items: center; }
+.stage { width: 1280px; height: 720px; position: relative; transform: scale(var(--s, 1)); flex: none; }
+
+/* ---------------- a slide ---------------- */
+.slide { position: absolute; inset: 0; display: none; flex-direction: column; padding: 60px 84px 80px; background: var(--paper); overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0,0,0,.8); }
+.slide.on { display: flex; }
+.slide.ink { background: var(--ink); color: #d9d3f5; }
+
+.lbl { display: inline-flex; align-items: center; gap: .6ch; font: 600 14px var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--violet-deep); }
+.lbl::before { content: ""; width: 22px; height: 2px; background: var(--violet); }
+.lbl.gold { color: var(--gold-deep); } .lbl.gold::before { background: var(--gold-deep); }
+.hd { margin-bottom: 30px; }
+.hd h2 { margin-top: 14px; font-size: 52px; }
+.hd-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.demo { flex: none; margin-top: 2px; font: 600 15px var(--mono); padding: 7px 13px; border-radius: 8px; background: var(--ink); color: var(--gold); letter-spacing: .02em; }
+
+.sfoot { position: absolute; left: 84px; right: 84px; bottom: 26px; display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--rule); font: 13px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.sfoot .brand { display: inline-flex; gap: 10px; align-items: center; color: var(--violet-deep); }
+.sfoot img { width: 20px; height: 20px; border-radius: 5px; }
+.ink .sfoot { border-top-color: rgba(233,228,255,.14); color: #8e87b8; }
+.ink .sfoot .brand { color: #c3bce8; }
+
+.note { margin-top: auto; padding: 15px 22px; font-size: 21px; line-height: 1.45; background: var(--gold-wash); border-left: 4px solid var(--gold); border-radius: 3px; }
+.note b { font-weight: 650; }
+
+/* title */
+.s-title { justify-content: center; }
+.blob { position: absolute; border-radius: 50%; }
+.blob.v { display: none; }
+.blob.g { display: none; }
+.title-body { position: relative; }
+.s-title h1 { margin-top: 26px; font-size: 100px; line-height: .98; }
+.s-title { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='68'%3E%3Cg stroke='%231d2a44' stroke-opacity='.06' fill='none'%3E%3Cpath d='M0 .5H96M0 34.5H96M.5 0V34M48.5 34V68'/%3E%3C/g%3E%3C/svg%3E"); background-size: 96px 68px; }
+.s-title .lbl.gold { padding: 7px 12px; background: var(--gold); color: var(--ink); border-radius: 2px; transform: rotate(-1.5deg); box-shadow: 0 6px 10px -6px rgba(29,42,68,.45); }
+.s-title .lbl.gold::before { display: none; }
+.mark-gold { background: linear-gradient(transparent 62%, var(--gold) 62%, var(--gold) 94%, transparent 94%); padding: 0 .06em; }
+.title-sub { margin-top: 28px; font-size: 27px; max-width: 36ch; color: var(--ink-soft); line-height: 1.4; }
+.title-by { display: flex; align-items: center; gap: 18px; margin-top: 50px; }
+.title-by img { width: 52px; height: 52px; border-radius: 12px; }
+.title-by strong { display: block; font: 700 26px var(--display); }
+.title-by span { font: 15px var(--mono); color: var(--ink-soft); }
+
+/* section / statement / end */
+.mid { margin: auto 0; }
+.sec-n { font: 600 30px var(--mono); color: var(--gold); letter-spacing: .1em; }
+.s-section .mid::before { content: ""; display: block; width: 96px; height: 6px; background: var(--gold); margin-bottom: 40px; }
+.s-section h2 { margin-top: 18px; font-size: 100px; color: #fff; }
+.s-section p { margin-top: 26px; font-size: 30px; color: #a49dd0; }
+.stmt { font: 700 66px/1.08 var(--display); letter-spacing: -0.03em; color: #fff; max-width: 21ch; text-wrap: balance; }
+.stmt-sub { margin-top: 34px; font-size: 28px; line-height: 1.4; color: #a49dd0; max-width: 50ch; padding-left: 22px; border-left: 4px solid var(--gold); }
+.end-body h2 { font-size: 84px; color: #fff; }
+.end-body p { margin-top: 22px; font-size: 26px; color: #a49dd0; max-width: 46ch; line-height: 1.45; }
+.end-body img { width: 130px; height: 130px; border-radius: 16px; margin-bottom: 30px; }
+
+/* agenda */
+.agenda { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+.agenda li { display: grid; grid-template-columns: 56px 380px 1fr; align-items: baseline; gap: 18px; padding: 13px 22px; background: var(--card); border: 1px solid var(--rule); border-left: 4px solid var(--violet); border-radius: 10px; }
+.agenda .n { font: 600 21px var(--mono); color: var(--violet-deep); }
+.agenda .t { font: 700 26px var(--display); letter-spacing: -0.02em; }
+.agenda .l { font-size: 18px; color: var(--ink-soft); }
+
+/* points */
+.pts { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; }
+.pts li { display: grid; grid-template-columns: 52px 1fr; gap: 12px; font-size: 25px; line-height: 1.38; color: var(--ink-soft); }
+.pts .n { font: 600 20px var(--mono); color: var(--violet); padding-top: 4px; }
+.pts strong { display: block; color: var(--ink); font: 700 1em var(--display); letter-spacing: -0.01em; }
+.pts .rest { font-size: .88em; }
+
+/* compare */
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-bottom: 24px; }
+.col { padding: 24px 28px; border-radius: 12px; border: 1px solid var(--rule); }
+.col h3 { font-size: 28px; margin-bottom: 14px; }
+.col ul { margin: 0; padding-left: 22px; display: grid; gap: 10px; }
+.col li { font-size: 21px; line-height: 1.38; color: var(--ink-soft); }
+.col.violet { background: var(--violet-wash); border-color: rgba(109,75,208,.28); }
+.col.gold { background: var(--gold-wash); border-color: rgba(201,163,56,.4); }
+.col.ink { background: var(--ink); border-color: var(--ink); }
+.col.ink h3 { color: #fff; } .col.ink li { color: #c3bce8; }
+.col pre { margin: 12px 0 0; font: 16px/1.5 var(--mono); white-space: pre-wrap; }
+.col.ink pre { color: var(--gold); }
+
+/* code */
+.code-grid { display: grid; grid-template-columns: .66fr 1.34fr; gap: 42px; align-items: center; flex: 1; min-height: 0; }
+.code-copy h2 { margin-top: 14px; font-size: 46px; }
+.code-copy p { margin-top: 20px; font-size: 21px; line-height: 1.5; color: var(--ink-soft); }
+.code-copy .demo { display: inline-block; margin-top: 22px; }
+.term { font-variant-ligatures: none; background: var(--ink); border-radius: 14px; overflow: hidden; font-family: var(--mono); box-shadow: 0 2px 4px rgba(29,42,68,.06), 0 14px 26px -16px rgba(29,42,68,.4); }
+.term-bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; background: #100d24; border-bottom: 1px solid rgba(233,228,255,.12); }
+.term-bar i { width: 11px; height: 11px; border-radius: 50%; background: #3b3566; }
+.term-bar i:first-child { background: var(--gold); }
+.term-bar span { margin-left: auto; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #6f68a3; }
+.term-body { padding: 18px 22px 22px; color: #e9e4ff; font-size: 16.5px; line-height: 1.58; }
+.term-body .l { display: block; white-space: pre; min-height: 1.58em; }
+.term .k { color: #b49bff; } .term .s { color: var(--term-green); } .term .c { color: #8c85bd; font-style: italic; } .term .hl { background: rgba(232,198,90,.16); box-shadow: -22px 0 0 rgba(232,198,90,.16), 22px 0 0 rgba(232,198,90,.16); }
+
+/* table */
+.tbl { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 21px; background: var(--card); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+.tbl thead th { font-size: 14px; letter-spacing: .12em; text-transform: uppercase; padding: 13px 20px; background: var(--ink); color: #fff; text-align: left; }
+.tbl tbody th { font: 700 22px var(--display); text-align: left; padding: 13px 20px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.tbl td { padding: 13px 20px; color: var(--ink-soft); border-bottom: 1px solid var(--rule); }
+.tbl tbody tr:last-child > * { border-bottom: 0; }
+.tbl .big { font: 700 26px var(--display); color: var(--ink); }
+.tbl .hot { color: var(--rose); font-weight: 650; }
+
+/* pipeline */
+.lane { display: grid; grid-template-columns: 150px repeat(4, 1fr); gap: 14px; align-items: center; margin-bottom: 18px; }
+.lane-name { font: 600 14px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--violet-deep); }
+.lane-name small { display: block; margin-top: 4px; font: 14px var(--sans); letter-spacing: 0; text-transform: none; color: var(--ink-soft); }
+.box { position: relative; padding: 16px 16px; border-radius: 12px; background: var(--card); border: 2px solid var(--rule); min-height: 104px; }
+.box b { display: block; font: 700 22px var(--display); }
+.box span { display: block; margin-top: 4px; font-size: 16px; color: var(--ink-soft); line-height: 1.35; }
+.box.api { border-color: var(--teal); background: var(--teal-wash); }
+.box.db { border-color: var(--rose); }
+.box.llm { border-color: var(--violet); background: var(--violet-wash); }
+.box:not(:last-child)::after { content: "→"; position: absolute; right: -16px; top: 50%; transform: translateY(-50%); font: 700 20px var(--display); color: var(--ink-soft); }
+
+/* checklist */
+.check { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 30px; }
+.check li { display: grid; grid-template-columns: 30px 1fr; font-size: 20px; line-height: 1.4; color: var(--ink); }
+.check li::before { content: "☐"; color: var(--violet); font-size: 22px; line-height: 1.25; }
+
+/* controls */
+.controls { position: fixed; left: 0; right: 0; bottom: 0; height: 52px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 18px; font: 13px var(--mono); color: #a49dd0; }
+.mid-ctl { display: flex; gap: 14px; align-items: center; }
+.right-ctl { justify-self: end; display: flex; gap: 8px; }
+.controls button { font: inherit; color: #e9e4ff; background: rgba(233,228,255,.08); border: 1px solid rgba(233,228,255,.16); border-radius: 6px; padding: 5px 11px; cursor: pointer; }
+.controls button:hover { border-color: var(--gold); color: var(--gold); }
+.progress { position: fixed; left: 0; right: 0; bottom: 52px; height: 3px; background: rgba(233,228,255,.08); }
+.progress i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .2s; }
+:fullscreen .controls, :fullscreen .progress { opacity: 0; } :fullscreen .controls:hover { opacity: 1; } :fullscreen .viewport { inset: 0; }
+
+
+/* week 1: a two-column agenda, and denser point lists */
+.agenda.two { grid-template-columns: 1fr 1fr; gap: 12px 18px; }
+.agenda.two li { grid-template-columns: 48px 1fr; padding: 12px 20px; }
+.agenda.two .t { display: block; font-size: 25px; }
+.agenda.two .l { display: block; margin-top: 2px; }
+.pts.dense { gap: 14px; }
+.pts.dense li { font-size: 23px; }
+.lane { grid-template-columns: 170px repeat(4, 1fr); }
+
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { height: auto; overflow: visible; background: none; }
+  .viewport { position: static; display: block; }
+  .stage { transform: none; height: auto; }
+  .slide { display: flex !important; position: relative; width: 1280px; height: 720px; box-shadow: none; break-after: page; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .controls, .progress { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="viewport"><div class="stage" id="stage"></div></div>
+<nav class="controls">
+  <span>Week 1 · Your first agent</span>
+  <div class="mid-ctl"><button data-go="prev">←</button><span id="counter"></span><button data-go="next">→</button></div>
+  <div class="right-ctl"><button data-go="full">⛶ F</button><button data-go="print">PDF</button></div>
+</nav>
+<div class="progress"><i id="bar"></i></div>
+
+<script>
+// ------------------------------------------------------------------ the deck
+// Each slide is one object. `demo` adds a tag saying which step of the
+// visualizer (python server.py → http://127.0.0.1:8768) to switch to.
+// Every code block is copied from the files in agent/ (some docstrings are
+// left out to fit), so what students see here is what they run.
+const P1 = "01 · Just an LLM", P2 = "02 · One tool call", P3 = "03 · Single-turn evals",
+      P4 = "04 · The agent loop", P5 = "05 · Multi-turn evals", P6 = "06 · File tools",
+      P7 = "07 · Web search", P8 = "08 · Context", P9 = "09 · Shell and code", P10 = "10 · Human approval";
+
+const SLIDES = [
+  { t: "title" },
+  { t: "statement", text: "A chatbot answers once. An agent acts, looks at the result, and acts again.",
+    sub: "Today you write every line of one, in plain Python: tools, a loop, evals, files, the web, a shell, and a person who says yes or no." },
+  { t: "agenda" },
+  { t: "points", lbl: "The idea", title: "What is an agent?", points: [
+    ["An LLM", "It reads the conversation and decides what to do next. It cannot do anything by itself."],
+    ["Tools", "Plain Python functions: read a file, search the web, run a command. Your code runs them, never the model."],
+    ["A loop", "Ask the model, run the tools it asked for, show it the results, ask again. Stop when it asks for nothing."],
+  ], note: "<b>In one sentence:</b> an agent is an LLM that takes actions in a loop until the task is done. The model chooses the next step." },
+  { t: "compare", lbl: "The idea", title: "What a plain LLM can't do", cols: [
+    { h: "An LLM alone", tone: "violet", items: ["Knows only its training data, which is months old", "Answers once, then stops", "Can only write text", "Can't check if it was right"] },
+    { h: "An agent", tone: "gold", items: ["Looks things up: files, the web, the clock", "Works in many steps", "Changes things: writes files, runs code", "Sees an error and tries again"] },
+  ] },
+  { t: "compare", lbl: "The idea", title: "Where agents help, and where they don't", cols: [
+    { h: "Good at", tone: "gold", items: ["Repetitive knowledge work", "Writing and changing code", "Tasks with many small steps", "Exploring: search, read, summarize"] },
+    { h: "Bad at", tone: "violet", items: ["Big decisions with nobody checking", "Tasks where “done” is not clear", "Work that needs taste", "Answers needed in milliseconds"] },
+  ], note: "<b>The biggest risk:</b> an agent that does the wrong thing and sounds sure. That is why today also has evals and approvals." },
+  { t: "loop" },
+  { t: "points", lbl: "In class", title: "How to use the visualizer", points: [
+    ["python server.py", "Open http://127.0.0.1:8768, pick a step, press Enter. The slides are at /slides/."],
+    ["Replay or Live", "Replay needs no API key and gives the same run every time. Live calls the real model (key in .env)."],
+    ["Watch three things", "The diagram: which function runs. The code: which line runs. The Data panel: what the model sees."],
+    ["Every step also runs alone", "cd agent, then python step4_agent_loop.py"],
+  ] },
+
+  // ---------------------------------------------------------------- 01
+  { t: "section", n: "01", title: "Just an LLM", sub: "One question in, one answer out" },
+  { t: "code", lbl: P1, title: "The whole program", demo: "Step 1", file: "agent/llm.py + step1_just_an_llm.py",
+    caption: "ask() sends one message and returns the text. Ask it the time, or what is in your folder. It can't know: it has no clock and no way to look.",
+    code: `def ask(prompt, system="You are a helpful assistant. Be concise."):
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": prompt},
+        ],
+    )
+    return response.choices[0].message.content
+
+
+def run(question):
+    return ask(question)`, hl: [4, 5, 6, 7] },
+  { t: "points", lbl: P1, title: "Three things it is missing", points: [
+    ["Hands", "It can't look at anything. It only sees the text we send. Step 2 gives it a tool."],
+    ["A loop", "One answer, then it stops. It can't try, check, and try again. Step 4 adds the loop."],
+    ["Memory", "Every call starts from zero. Memory is the list of messages we send again each time."],
+  ] },
+
+  // ---------------------------------------------------------------- 02
+  { t: "section", n: "02", title: "One tool call", sub: "The model asks. Your code runs." },
+  { t: "points", lbl: P2, title: "How tool calling works", demo: "Step 2", dense: true, points: [
+    ["You describe the tool", "Its name, what it does, and its parameters."],
+    ["The model asks for it", "Instead of text, it replies: “please call get_current_time”."],
+    ["You run it", "Your code calls the function. The model never runs anything."],
+    ["You send the result back", "As a message with the role “tool”."],
+    ["The model answers", "Now it has the fact it was missing."],
+  ], note: "<b>This is a security boundary.</b> The model only asks. Your code decides what really runs." },
+  { t: "code", lbl: P2, title: "A tool is a Python function", file: "agent/tools.py → what the model sees",
+    caption: "llm.py turns the function into a description. The model sees the name, the parameters and the docstring, nothing else. So the docstring is not a comment for you. It is the instruction for the model.",
+    code: `def get_current_time() -> str:
+    """Get the current date and time."""
+    return datetime.datetime.now().strftime(...)
+
+
+# tool_schema(get_current_time) gives:
+{"type": "function",
+ "function": {
+     "name": "get_current_time",
+     "description": "Get the current date and time.",
+     "parameters": {"type": "object",
+                    "properties": {},
+                    "required": []}}}`, hl: [2, 10] },
+  { t: "code", lbl: P2, title: "One tool call, in three acts", demo: "Step 2", file: "agent/step2_one_tool_call.py",
+    caption: "Two calls to the model. In between, we run the tool and add its result. tool_result() copies the call's id, so the model knows which question the answer belongs to.",
+    code: `def run(question):
+    messages = [{"role": "user", "content": question}]
+
+    reply = chat(messages, tools=[get_current_time])   # 1. ask
+    messages.append(reply.message)
+
+    if not reply.tool_calls:                           # no tool needed
+        return reply.text
+
+    for call in reply.tool_calls:                      # 2. run the tool
+        result = get_current_time(**call.args)
+        messages.append(tool_result(call, result))
+
+    final = chat(messages, tools=[get_current_time])   # 3. ask again
+    return final.text`, hl: [11, 12] },
+  { t: "points", lbl: P2, title: "Three things to remember", points: [
+    ["messages is a list you own", "Everything the model knows about this conversation is in it. Print it any time. In the visualizer it is the Data panel."],
+    ["Add the model's reply too", "reply.message holds its tool call. A tool result without the call before it is an API error."],
+    ["No tool needed? One call", "“What is the capital of France?” gets a plain answer in one call."],
+  ] },
+
+  // ---------------------------------------------------------------- 03
+  { t: "section", n: "03", title: "Single-turn evals", sub: "Measure before you add more" },
+  { t: "points", lbl: P3, title: "Why evals", points: [
+    ["The same prompt gives different answers", "LLMs are not deterministic. One good run proves nothing."],
+    ["Changes break things quietly", "A new model, prompt or tool description can make other cases worse."],
+    ["Ship with confidence", "A score you can compare, before and after every change."],
+    ["Debug faster", "A failing case shows you exactly where to look."],
+  ] },
+  { t: "table", lbl: P3, title: "Three kinds of test case", demo: "Step 3", head: ["Kind", "The question", "Scorer", "Example"], rows: [
+    ["Golden", "Did it pick the right tool?", "tools_selected", "“Read config.json” → read_file"],
+    ["Secondary", "Several tools are fine: partial credit", "selection_score", "“Show me around” → list_files, read_file"],
+    ["Negative", "Did it stay away from wrong tools?", "tools_avoided", "“Capital of France?” → no tool"],
+  ], note: "<b>People forget the negative cases.</b> An agent that reaches for a tool on every prompt is broken too." },
+  { t: "code", lbl: P3, title: "One case, one score", demo: "Step 3", file: "agent/step3_single_turn_evals.py",
+    caption: "Each case is a dictionary: a prompt, a kind, and what is expected or forbidden. One chat() call per case. No tool is ever run: we only look at which tools the model asked for.",
+    code: `{"prompt": "Read the contents of config.json",
+ "category": "golden", "expected": ["read_file"]},
+
+
+def score_case(case):
+    reply = chat([{"role": "user", "content": case["prompt"]}],
+                 tools=TOOLS)
+    chosen = [call.name for call in reply.tool_calls]
+
+    if case["category"] == "golden":
+        score = tools_selected(chosen, case["expected"])
+    elif case["category"] == "secondary":
+        score = selection_score(chosen, case["expected"])
+    else:
+        score = tools_avoided(chosen, case["forbidden"])`, hl: [8] },
+  { t: "code", lbl: P3, title: "Scorers are tiny functions", file: "agent/scorers.py",
+    caption: "Each one returns a number from 0 to 1. selection_score (the F1 score) gives partial credit: the right tools, and only the right tools.",
+    code: `def tools_selected(chosen, expected):
+    return 1.0 if all(tool in chosen for tool in expected) else 0.0
+
+
+def tools_avoided(chosen, forbidden):
+    return 0.0 if any(tool in chosen for tool in forbidden) else 1.0
+
+
+def selection_score(chosen, expected):
+    right = len(set(chosen) & set(expected))
+    if right == 0:
+        return 0.0
+    precision = right / len(set(chosen))
+    recall = right / len(set(expected))
+    return 2 * precision * recall / (precision + recall)` },
+  { t: "statement", text: "Our own eval fails one case.",
+    sub: "“Remove the old todo.txt” → the model called list_files, not delete_file. Is the model wrong, or the test? Looking before deleting is sensible. Deciding that is the job." },
+  { t: "points", lbl: P3, title: "Doing evals well", points: [
+    ["Offline first", "A fixed set of cases you run before every change. Online evals score real traffic later."],
+    ["Where cases come from", "Write them by hand first. Then add real failures, tricky edge cases, and attacks (red teaming)."],
+    ["Hill climbing", "Score, change one thing, score again. Keep it if it is better, undo it if not."],
+    ["Try it now", "Change list_files' docstring to “file stuff”. Run step 3 again. Watch a case fail."],
+  ] },
+
+  // ---------------------------------------------------------------- 04
+  { t: "section", n: "04", title: "The agent loop", sub: "The heart of every agent" },
+  { t: "table", lbl: P4, title: "LLM, workflow, agent", head: ["", "Who picks the next step?", "Example"], rows: [
+    ["An LLM call", "nobody: one answer", "step 1"],
+    ["A workflow", "the code, in a fixed order", "summarize, then translate"],
+    ["An agent", "the model, at every step", "step 4 and after"],
+  ], note: "Agency is a scale: one tool call (step 2), a loop with a limit, a loop until done, many agents working together." },
+  { t: "code", lbl: P4, title: "The loop", demo: "Step 4", file: "agent/step4_agent_loop.py",
+    caption: "Ask. Add the reply. No tool calls? That is the answer. Otherwise run each tool, add each result, and ask again. The model decides when to stop. MAX_STEPS decides when it must.",
+    code: `MAX_STEPS = 10  # a confused model would loop forever, on your money
+
+
+def run(task):
+    messages = [
+        {"role": "system", "content": SYSTEM},
+        {"role": "user", "content": task},
+    ]
+    for step in range(MAX_STEPS):
+        reply = chat(messages, tools=TOOLS.values())     # think
+        messages.append(reply.message)
+
+        if not reply.tool_calls:                         # no tools: the answer
+            return reply.text
+
+        for call in reply.tool_calls:                    # act
+            result = TOOLS[call.name](**call.args)
+            messages.append(tool_result(call, result))   # observe
+
+    return "Stopped: too many steps."`, hl: [13, 14] },
+  { t: "points", lbl: P4, title: "When does the loop stop?", dense: true, points: [
+    ["The model asks for no tools", "The normal end: it decided it is done."],
+    ["MAX_STEPS", "Every production agent has this number. Ours is 10."],
+    ["Too many tokens", "The conversation got too long: stop, or compact it (step 8)."],
+    ["The user stops it", "Ctrl+C, a Stop button, a timeout."],
+    ["Too many errors", "Count failures in a row, and give up after 3."],
+  ] },
+  { t: "points", lbl: P4, title: "Common bugs", points: [
+    ["No step limit", "An endless loop, on your bill."],
+    ["A tool call without its result", "Every call needs a result with the same id, or the API returns an error."],
+    ["Messages in the wrong order", "user → assistant (asks for tools) → tool results → assistant …"],
+    ["Raising errors", "Return the error as text instead. The model reads it and fixes the problem."],
+  ] },
+  { t: "code", lbl: P4, title: "The same loop, reusable", file: "agent/agent.py",
+    caption: "Steps 5 to 9 only change the tools, so the loop moves into run_agent(). run_tool() turns any crash into a message for the model.",
+    code: `def run_agent(messages, tools):
+    tools = {tool.__name__: tool for tool in tools}
+
+    for step in range(MAX_STEPS):
+        reply = chat(messages, tools=tools.values())    # think
+        messages.append(reply.message)
+
+        if not reply.tool_calls:                        # no tools: the answer
+            return reply.text
+
+        for call in reply.tool_calls:                   # act
+            result = run_tool(tools, call)
+            messages.append(tool_result(call, result))  # observe
+
+    return "Stopped: too many steps."
+
+
+def run_tool(tools, call):
+    if call.name not in tools:
+        return f"Error: there is no tool called {call.name}"
+    try:
+        return tools[call.name](**call.args)
+    except Exception as error:
+        return f"Error: {error}"`, hl: [20, 21, 22, 23] },
+
+  // ---------------------------------------------------------------- 05
+  { t: "section", n: "05", title: "Multi-turn evals", sub: "Did it finish the task?" },
+  { t: "points", lbl: P5, title: "What single-turn evals miss", points: [
+    ["The second step", "Right first tool, wrong second one."],
+    ["Loops", "It calls the same tool again and again."],
+    ["Misreading a result", "The file says 8080; the answer says 3000."],
+    ["Stopping at the wrong time", "It gives up too early, or never stops."],
+  ], note: "There is no single right path: two good runs can use different tools in a different order. So we score the run, not one exact transcript." },
+  { t: "code", lbl: P5, title: "Mocked tools", demo: "Step 5", file: "agent/step5_multi_turn_evals.py",
+    caption: "A fake tool with the same name, docstring and parameters, but a fixed result. Every run sees the same world, it is fast, and nothing on disk changes. A case can start mid-conversation.",
+    code: `def mocked(tool, result):
+    @functools.wraps(tool)            # same name, docstring, parameters
+    def mock_tool(**args):
+        return result
+    return mock_tool
+
+
+{"name": "mid-conversation",
+ "messages": [
+     {"role": "user", "content": "I'm getting the app ready to deploy."},
+     {"role": "assistant", "content": "Great. What should I change?"},
+     {"role": "user", "content": "Change the port in config.json to 3000."},
+ ],
+ "mocks": {"read_file": '{"port": 8080, "debug": true}', ...},
+ "expected_order": ["read_file", "write_file"],
+ "forbidden": ["delete_file"]}`, hl: [2] },
+  { t: "table", lbl: P5, title: "Three scores for one run", head: ["Scorer", "Checks", "How"], rows: [
+    ["tool_order_correct", "the right tools, in the right order", "code (other calls in between are fine)"],
+    ["tools_avoided", "no forbidden tools", "code"],
+    ["llm_judge", "is the final answer good?", "another LLM, with a rubric"],
+  ], note: "The conversation is the trace: tools_called(messages) reads every tool call straight out of the message list." },
+  { t: "code", lbl: P5, title: "An LLM as the judge", file: "agent/scorers.py",
+    caption: "There is no one right sentence to compare with. So a model grades the answer, with a clear rubric and JSON output: a score and a reason.",
+    code: `JUDGE = """You grade the final answer of an AI agent.
+Score it from 1 to 10:
+  10   fully solves the task and uses the tool results correctly
+  7-9  mostly right, small problems
+  4-6  partly solves the task
+  1-3  wrong or off topic
+Reply as JSON: {"score": <1-10>, "reason": "<one sentence>"}"""
+
+
+def llm_judge(task, tool_results, answer):
+    prompt = (f"Task: {task}\\n\\n"
+              f"Tool results the agent saw: {tool_results}\\n\\n"
+              f"The agent's final answer: {answer}")
+    verdict = ask_json(prompt, system=JUDGE)
+    return verdict["score"] / 10, verdict["reason"]` },
+  { t: "compare", lbl: P5, title: "Judges are useful, not perfect", cols: [
+    { h: "The problems", tone: "violet", items: ["One more model call per case", "Not consistent: 8 today, 7 tomorrow", "Likes long, confident answers", "Can be gamed if you tune for it"] },
+    { h: "Make it better", tone: "gold", items: ["A clear rubric: what each score means", "JSON output: a number and a reason", "A stronger model as the judge", "Several judges, then the average"] },
+  ] },
+  { t: "statement", text: "Our eval caught a looping agent.",
+    sub: "In the first version, tools without a mock returned “OK”. The agent called list_files ten times and gave up. The fix was in the test: give every tool a realistic answer." },
+
+  // ---------------------------------------------------------------- 06
+  { t: "section", n: "06", title: "File system tools", sub: "Real hands" },
+  { t: "points", lbl: P6, title: "Why files matter to an agent", points: [
+    ["Memory", "Notes that are still there after the conversation ends."],
+    ["State", "Where a long task is up to: done, in progress, next."],
+    ["A scratch pad", "Big data goes into a file. Only the part that matters goes into the prompt."],
+    ["A record", "A log of what the agent did, so people can check it."],
+  ] },
+  { t: "code", lbl: P6, title: "Read a file, safely", demo: "Step 6", file: "agent/tools.py",
+    caption: "Two rules. Every path must stay inside the workspace folder. Every error comes back as text: a missing file is information for the model, not a crash.",
+    code: `def read_file(path: str) -> str:
+    """Read a text file from the workspace."""
+    try:
+        text = inside_workspace(path).read_text()
+    except FileNotFoundError:
+        return f"Error: file not found: {path}"
+    except Exception as error:
+        return f"Error: {error}"
+    ...
+
+
+def inside_workspace(path):
+    full_path = (WORKSPACE / path).resolve()
+    if not full_path.is_relative_to(WORKSPACE.resolve()):
+        raise PermissionError(f"{path} is outside the workspace")
+    return full_path`, hl: [6, 14, 15] },
+  { t: "points", lbl: P6, title: "Design decisions", points: [
+    ["Four small tools, not one big one", "list, read, write, delete. Clear names, simple parameters, and each one can be approved on its own (step 10)."],
+    ["Errors as text", "“Error: file not found: secrets.txt” → the model lists the folder and tries again."],
+    ["Make folders automatically", "write_file creates the parent folders it needs."],
+    ["Cut big files", "read_file returns at most 200 lines, so one file can't fill the context."],
+  ] },
+  { t: "table", lbl: P6, title: "Where may the agent write?", head: ["Rule", "Good", "Bad"], rows: [
+    ["Anywhere", "simple", "one bad path and your files are gone"],
+    ["One folder (ours)", "safe enough to learn", "you must block ../ tricks"],
+    ["A list of allowed folders", "the safest", "more to set up"],
+  ] },
+  { t: "points", lbl: P6, title: "Patterns you will see", demo: "Step 6", points: [
+    ["Read, change, write", "Read config.json, change the port, write it back."],
+    ["Look, then read", "list_files first, then read the file that matters."],
+    ["Write, then check", "Read the file again to confirm the change."],
+    ["Try it", "“Read secrets.txt” (missing) and “Read ../tools.py” (outside): watch it recover."],
+  ] },
+
+  // ---------------------------------------------------------------- 07
+  { t: "section", n: "07", title: "Web search", sub: "Knowledge after the training date" },
+  { t: "compare", lbl: P7, title: "Two ways to search", cols: [
+    { h: "Built into the model", tone: "violet", items: ["OpenAI search models, Perplexity, Gemini", "Fast and cheap", "Tied to one provider", "Less control over results"] },
+    { h: "A search API as a tool", tone: "gold", items: ["Tavily, Exa, Brave, Google …", "Works with any model", "You control and format the results", "Costs extra, and adds one more step"] },
+  ], note: "Ours is a bit of both: web_search() is a normal tool, and inside it asks a model that has search built in." },
+  { t: "code", lbl: P7, title: "Say when NOT to use it", demo: "Step 7", file: "agent/tools.py",
+    caption: "Without the last line you get an agent that searches the web for the capital of France. The docstring decides when a tool is used.",
+    code: `def web_search(query: str) -> str:
+    """Search the web. Use it ONLY for things that change
+    or that you cannot know: news, weather, prices,
+    latest versions, today's events.
+    Do not search for things you already know,
+    like the capital of France."""
+    return search_web(query)`, hl: [5, 6] },
+
+  // ---------------------------------------------------------------- 08
+  { t: "section", n: "08", title: "Context", sub: "Keep long sessions affordable" },
+  { t: "points", lbl: P8, title: "Tokens", points: [
+    ["A token is a piece of a word", "“hello” is 1 token. On average a token is about 4 characters. Code needs more tokens than prose."],
+    ["Every call sends everything again", "The system prompt, the tool descriptions, the whole conversation, and every tool result."],
+    ["Output costs more", "Output tokens cost 3 to 4 times as much as input tokens."],
+    ["The context window", "The most tokens one call can hold, input and output together. gpt-4o-mini: 128,000."],
+  ] },
+  { t: "table", lbl: P8, title: "Where the tokens go", head: ["", "About"], rows: [
+    ["One code file", "500 tokens"],
+    ["One web search result", "1,000 to 3,000 tokens"],
+    ["10 messages back and forth", "5,000 tokens"],
+    ["The tool descriptions", "500 to 1,000 tokens, on every call"],
+  ], note: "<b>Why the window is limited:</b> every token is compared with every other one, so 10× the tokens is about 100× the work. And models remember the start and end of a long prompt better than the middle." },
+  { t: "table", lbl: P8, title: "Six ways to stay small", head: ["Strategy", "What it does", "Where"], rows: [
+    ["Prevent bloat", "cut tool results; return only what's needed", "try this first"],
+    ["Compact", "summarize the old messages", "step 8"],
+    ["Sliding window", "drop the oldest messages", ""],
+    ["Sub-agents", "a side task gets its own fresh conversation", "week 12"],
+    ["Search the history", "RAG over old messages", "week 7"],
+    ["Start fresh", "save key facts, start a new session", "week 9"],
+  ] },
+  { t: "code", lbl: P8, title: "Compact at 80%", demo: "Step 8", file: "agent/step8_context.py",
+    caption: "Count before the turn. Over 80% of the window? Replace the history with a summary. 80%, not 100%: the reply and the tool results need room too.",
+    code: `CONTEXT_WINDOW = 1_000   # tokens. Tiny on purpose, to see it happen
+THRESHOLD = 0.8          # compact at 80%
+
+
+def run(question):
+    history = list(PAST_MESSAGES)              # earlier turns
+    new_message = {"role": "user", "content": question}
+
+    tokens = estimate_tokens([SYSTEM] + history + [new_message])
+    if tokens > CONTEXT_WINDOW * THRESHOLD:
+        history = compact(history)
+
+    messages = [SYSTEM] + history + [new_message]
+    return run_agent(messages, TOOLS)
+
+
+def estimate_tokens(messages):
+    """About 4 characters per token."""
+    characters = sum(len(message.get("content") or "") for message in messages)
+    return characters // 4`, hl: [9, 10, 11] },
+  { t: "code", lbl: P8, title: "The summary replaces the history", file: "agent/step8_context.py",
+    caption: "The prompt says what to keep: decisions, facts and numbers, open tasks, and the goal. The new history is two messages. In the demo, 12 messages become 2, and about 1,050 tokens become about 170.",
+    code: `def compact(history):
+    text = ""
+    for message in history:
+        text += f"{message['role'].upper()}: {message['content']}\\n\\n"
+
+    summary = ask(SUMMARY_PROMPT + text)
+    return [
+        {"role": "user",
+         "content": f"[Summary of our conversation so far]\\n{summary}"},
+        {"role": "assistant",
+         "content": "Thanks, I have the summary. Let's continue."},
+    ]`, hl: [6] },
+  { t: "compare", lbl: P8, title: "What a summary keeps, and what it loses", cols: [
+    { h: "Keeps", tone: "gold", items: ["Decisions: SQLite, port 3000", "Facts, names and numbers", "Open tasks", "The goal"] },
+    { h: "Loses", tone: "violet", items: ["The exact words", "Details of old tool results", "Why each step was taken", "The tone of the conversation"] },
+  ], note: "<b>Compact between turns, never in the middle of one.</b> A tool call without its result is an API error." },
+
+  // ---------------------------------------------------------------- 09
+  { t: "section", n: "09", title: "Shell and code", sub: "The tools developers use" },
+  { t: "code", lbl: P9, title: "run_command", demo: "Step 9", file: "agent/tools.py",
+    caption: "One tool, a thousand abilities: ls, wc, git, pip, tests. A timeout stops commands that never end. A failed command is reported, not hidden.",
+    code: `def run_command(command: str) -> str:
+    try:
+        result = subprocess.run(command, shell=True, cwd=WORKSPACE,
+                                capture_output=True, text=True, timeout=TIMEOUT)
+    except subprocess.TimeoutExpired:
+        return f"Error: stopped after {TIMEOUT} seconds"
+    output = result.stdout + result.stderr
+    if result.returncode != 0:
+        return f"Command failed (exit code {result.returncode}):\\n{output}"
+    return output or "Done (no output)"`, hl: [4, 9] },
+  { t: "compare", lbl: P9, title: "Two ways to run code", cols: [
+    { h: "One tool: execute_code (ours)", tone: "gold", items: ["Writes a file, runs it, deletes it: one call", "Fewer steps, fewer tokens", "It can't forget to clean up"] },
+    { h: "Two tools: write_file + run_command", tone: "violet", items: ["Full control over every step", "More calls, more tokens", "More things that can go wrong"] },
+  ], note: "Code is exact where the model is not. The system prompt says: <b>for any calculation, write and run code.</b>" },
+  { t: "statement", text: "The model said 910. The real answer was 950.",
+    sub: "Its code worked out the total but never printed it. The tool said “Done (no output)”, so the model guessed. Now the tool says “Use print() to see the result”. Good tool messages teach the model how to recover." },
+  { t: "table", lbl: P9, title: "This runs on your machine", head: ["Where", "What to do"], rows: [
+    ["Learning, on your laptop", "run it directly, and watch it (today)"],
+    ["Internal tools", "a sandbox is a good idea"],
+    ["A product for users", "a sandbox is required"],
+    ["Untrusted input", "a strict sandbox and a list of allowed commands"],
+  ] },
+  { t: "points", lbl: P9, title: "What a sandbox is", points: [
+    ["A container", "Docker, gVisor or Firecracker: a throwaway computer."],
+    ["No network", "Nothing can be sent out."],
+    ["Limits", "CPU time, memory, disk, number of processes."],
+    ["Fresh every time", "Nothing survives from one run to the next."],
+  ], note: "<b>Even if someone tricks the agent, the damage stays inside the box.</b>" },
+
+  // ---------------------------------------------------------------- 10
+  { t: "section", n: "10", title: "Human approval", sub: "Ask before acting" },
+  { t: "points", lbl: P10, title: "Why ask a person", points: [
+    ["Trust", "People use an agent they know they can stop."],
+    ["Accountability", "A record of who approved what."],
+    ["Some actions can't be undone", "Deleting, sending, paying, running commands."],
+    ["Learning", "If people always say yes to something, you can auto-approve it later."],
+  ] },
+  { t: "code", lbl: P10, title: "The gate", demo: "Step 10", file: "agent/step10_human_approval.py",
+    caption: "The loop from step 4 plus one if. Reading is safe; changing needs a yes. A no is not an error: the model gets a tool result that says it was not done, and tells you.",
+    code: `NEEDS_APPROVAL = {"write_file", "delete_file",
+                  "run_command", "execute_code"}
+
+        for call in reply.tool_calls:
+            if call.name in NEEDS_APPROVAL and not approved(call):
+                result = "The user said no, so this was NOT done. Tell them."
+            else:
+                result = TOOLS[call.name](**call.args)
+            messages.append(tool_result(call, result))
+
+
+def approved(call):
+    answer = input(f"Allow {call.name}({call.args})? [y/n] ")
+    return answer.strip().lower() == "y"`, hl: [5, 6] },
+  { t: "table", lbl: P10, title: "What needs a yes?", head: ["Rule", "Example"], rows: [
+    ["By tool (ours)", "read: auto · write, delete, shell, code: ask"],
+    ["By input", "ls and cat: auto · rm or sudo: ask"],
+    ["By session", "“trust this tool until I close the app”"],
+    ["By risk", "low: auto · medium: ask · high: block"],
+    ["By cost", "under 1 cent or 5 seconds: auto"],
+  ] },
+  { t: "compare", lbl: P10, title: "Waiting for the answer", cols: [
+    { h: "Synchronous (today)", tone: "gold", items: ["The loop waits at input()", "Simple: everything stays in memory", "The person must be there now", "Fine for a CLI on your laptop"] },
+    { h: "Asynchronous (week 3)", tone: "violet", items: ["Save the state, notify, stop", "Resume minutes or days later", "Needs storage and a way to wake up", "Slack, email, an inbox for agents"] },
+  ] },
+
+  // ---------------------------------------------------------------- wrap up
+  { t: "points", lbl: "Practice", title: "Exercises", dense: true, points: [
+    ["Your own eval cases", "Add 3 cases to step 3, one of them negative. Make one fail, then fix the docstring."],
+    ["A new tool", "Add append_file(path, text) to tools.py, and a golden case for it."],
+    ["Break the loop", "Set MAX_STEPS = 1 in step 4. What happens, and why?"],
+    ["Approve by input", "In step 10, auto-approve run_command for ls and wc, and ask for everything else."],
+    ["Smaller results", "Cut every tool result to 500 characters in run_tool. What does step 9 lose?"],
+  ] },
+  { t: "checklist" },
+  { t: "end" },
+];
+
+const AGENDA = [
+  ["01", "Just an LLM", "one call, no tools"],
+  ["02", "One tool call", "the model asks, we run"],
+  ["03", "Single-turn evals", "did it pick the right tool?"],
+  ["04", "The agent loop", "the heart of it"],
+  ["05", "Multi-turn evals", "mocks, order, a judge"],
+  ["06", "File tools", "read, write, list, delete"],
+  ["07", "Web search", "and when not to"],
+  ["08", "Context", "tokens and compaction"],
+  ["09", "Shell and code", "power, and its danger"],
+  ["10", "Human approval", "ask before acting"],
+];
+
+const CHECKLIST = [
+  "A tool is a function + a docstring; tool_schema() describes it",
+  "One tool call works: ask, run, ask again",
+  "A single-turn eval with golden, secondary and negative cases",
+  "The loop: stops when no tools are asked for, and at MAX_STEPS",
+  "A multi-turn eval with mocked tools and an LLM judge",
+  "File tools that stay inside one folder and return errors as text",
+  "web_search, with a docstring that says when not to search",
+  "Compaction when the conversation passes 80% of the window",
+  "run_command and execute_code, with timeouts",
+  "Risky tools wait for your yes; a no goes back to the model",
+];
+
+// ------------------------------------------------------------------ rendering
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const KW = /\b(def|return|for|in|if|elif|not|or|and|import|from|else|while|lambda|class|try|except|as)\b/g;
+
+function highlight(code, hl = []) {
+  return code.split("\n").map((line, i) => {
+    let body = line, comment = "";
+    const hash = line.search(/#(?![^"]*"[^"]*$)/);
+    if (hash >= 0) { body = line.slice(0, hash); comment = line.slice(hash); }
+    let html = esc(body).replace(/("""|"[^"]*"|'[^']*')/g, "\u0000$1\u0001");
+    html = html.split(/(\u0000[^\u0001]*\u0001)/).map((part) =>
+      part.startsWith("\u0000") ? `<span class="s">${part.slice(1, -1)}</span>` : part.replace(KW, '<span class="k">$1</span>')).join("");
+    if (comment) html += `<span class="c">${esc(comment)}</span>`;
+    return `<span class="l${hl.includes(i + 1) ? " hl" : ""}">${html}</span>`;
+  }).join("");
+}
+
+// shrink a code block just enough that its longest line fits (mono ≈ 0.6em per character)
+const codeSize = (code) => Math.min(16.5, Math.floor(640 / (0.61 * Math.max(...code.split("\n").map((l) => l.length))) * 10) / 10);
+const demoTag = (s) => s.demo ? `<span class="demo">▶ Demo · ${s.demo}</span>` : "";
+const head = (s) => `<header class="hd"><div class="hd-row"><span class="lbl">${s.lbl}</span>${demoTag(s)}</div><h2>${s.title}</h2></header>`;
+const note = (s) => s.note ? `<p class="note">${s.note}</p>` : "";
+
+const RENDER = {
+  title: () => `<div class="title-body">
+      <span class="lbl gold">AI Engineering · Week 1</span>
+      <h1>Your first<br><span class="mark-gold">agent.</span></h1>
+      <p class="title-sub">An LLM, a few tools and a loop. Built from an empty file in plain Python: no framework, nothing hidden.</p>
+      <div class="title-by"><img src="logo-mark.png" alt=""><div><strong>Pouria Jahandideh</strong><span>pjsofts.github.io · AI Engineering</span></div></div>
+    </div>`,
+  statement: (s) => `<div class="mid"><p class="stmt">${s.text}</p>${s.sub ? `<p class="stmt-sub">${s.sub}</p>` : ""}</div>`,
+  section: (s) => `<div class="mid"><span class="sec-n">${s.n}</span><h2>${s.title}</h2><p>${s.sub}</p></div>`,
+  agenda: () => `<header class="hd"><span class="lbl">Today</span><h2>Ten steps, one agent</h2></header>
+    <ol class="agenda two">${AGENDA.map(([n, t, l]) => `<li><span class="n">${n}</span><span><span class="t">${t}</span><span class="l">${l}</span></span></li>`).join("")}</ol>`,
+  points: (s) => `${head(s)}<ol class="pts${s.dense ? " dense" : ""}">${s.points.map(([b, r], i) =>
+      `<li><span class="n">${String(i + 1).padStart(2, "0")}</span><span><strong>${b}</strong> <span class="rest">${r}</span></span></li>`).join("")}</ol>${note(s)}`,
+  compare: (s) => `${head(s)}<div class="cmp">${s.cols.map((c) =>
+      `<div class="col ${c.tone}"><h3>${c.h}</h3><ul>${c.items.map((i) => `<li>${i}</li>`).join("")}</ul>${c.pre ? `<pre>${esc(c.pre)}</pre>` : ""}</div>`).join("")}</div>${note(s)}`,
+  code: (s) => `<div class="code-grid">
+      <div class="code-copy"><span class="lbl">${s.lbl}</span><h2>${s.title}</h2><p>${s.caption}</p>${demoTag(s)}</div>
+      <div class="term"><div class="term-bar"><i></i><i></i><i></i><span>${s.file}</span></div><div class="term-body" style="font-size:${codeSize(s.code)}px">${highlight(s.code, s.hl)}</div></div>
+    </div>`,
+  table: (s) => `${head(s)}<table class="tbl"><thead><tr>${s.head.map((h) => `<th>${h}</th>`).join("")}</tr></thead>
+    <tbody>${s.rows.map((r) => `<tr>${r.map((c, j) => j === 0 ? `<th>${c}</th>` : `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>${note(s)}`,
+  loop: () => `<header class="hd"><div class="hd-row"><span class="lbl">The plan</span><span class="demo">▶ Demo · Step 4</span></div><h2>The whole agent on one slide</h2></header>
+    <div class="lane"><div class="lane-name">The loop<small>until the model asks for nothing</small></div>
+      <div class="box llm"><b>1 · Ask</b><span>send the messages and the tool descriptions</span></div>
+      <div class="box"><b>2 · Tools?</b><span>none: that is the answer, stop</span></div>
+      <div class="box api"><b>3 · Run them</b><span>your code runs the tools, not the model</span></div>
+      <div class="box db"><b>4 · Add results</b><span>append to the messages, go to 1</span></div></div>
+    <div class="lane"><div class="lane-name">Around it<small>steps 3, 5–10</small></div>
+      <div class="box"><b>Evals</b><span>score the choices and the whole run</span></div>
+      <div class="box api"><b>More tools</b><span>files, web, shell, code</span></div>
+      <div class="box"><b>Limits</b><span>MAX_STEPS, tokens, timeouts</span></div>
+      <div class="box llm"><b>A person</b><span>says yes before risky actions</span></div></div>
+    <p class="note">Steps 1–3 build the parts. Step 4 is the loop. <b>After step 4 the loop never changes:</b> everything else is a tool added to it, a limit around it, or a person in front of it.</p>`,
+  checklist: () => `<header class="hd"><span class="lbl">You ship · Week 1</span><h2>An agent you understand, line by line</h2></header>
+    <ul class="check">${CHECKLIST.map((c) => `<li>${c}</li>`).join("")}</ul>
+    <p class="note"><b>Stretch:</b> stream the reply token by token · a consecutive-errors limit · auto-approve safe shell commands · a second agent as a tool.</p>`,
+  end: () => `<div class="mid end-body"><img src="logo.png" alt=""><h2>Questions?</h2>
+    <p>Next week: evals and engineering discipline. Measure the agent, then make it better, one change at a time.</p></div>`,
+};
+
+const stage = document.getElementById("stage");
+const INK = new Set(["statement", "section", "end"]);
+SLIDES.forEach((s, i) => {
+  const a = document.createElement("article");
+  a.className = `slide s-${s.t}${INK.has(s.t) ? " ink" : ""}`;
+  a.innerHTML = RENDER[s.t](s) + (s.t === "title" ? "" :
+    `<footer class="sfoot"><span class="brand"><img src="logo-mark.png" alt="">Pouria Jahandideh · Week 1 · Your first agent</span><span>${String(i + 1).padStart(2, "0")} / ${SLIDES.length}</span></footer>`);
+  stage.append(a);
+});
+
+// ------------------------------------------------------------------ navigation
+const slides = [...document.querySelectorAll(".slide")];
+const N = slides.length;
+let cur = 0;
+const fromHash = () => { const n = parseInt(location.hash.slice(1), 10); return Number.isFinite(n) ? Math.min(Math.max(n - 1, 0), N - 1) : 0; };
+function show(i) {
+  cur = Math.min(Math.max(i, 0), N - 1);
+  slides.forEach((s, j) => s.classList.toggle("on", j === cur));
+  document.getElementById("counter").textContent = `${cur + 1} / ${N}`;
+  document.getElementById("bar").style.width = `${((cur + 1) / N) * 100}%`;
+  history.replaceState(null, "", `#${cur + 1}`);
+}
+function fit() { document.documentElement.style.setProperty("--s", Math.min(innerWidth / 1280, (innerHeight - 52) / 720)); }
+function full() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.(); }
+document.addEventListener("keydown", (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key;
+  if (["ArrowRight", "PageDown", " ", "l"].includes(k)) show(cur + 1);
+  else if (["ArrowLeft", "PageUp", "h"].includes(k)) show(cur - 1);
+  else if (k === "Home") show(0);
+  else if (k === "End") show(N - 1);
+  else if (k === "f" || k === "F") full();
+  else return;
+  e.preventDefault();
+});
+document.querySelectorAll("[data-go]").forEach((b) => b.onclick = () => {
+  const go = b.dataset.go;
+  if (go === "next") show(cur + 1); else if (go === "prev") show(cur - 1); else if (go === "full") full(); else window.print();
+});
+addEventListener("resize", fit);
+addEventListener("hashchange", () => show(fromHash()));
+fit();
+show(fromHash());
+</script>
+</body>
+</html>
